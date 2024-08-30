@@ -1,0 +1,13 @@
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: {{ .Values.appName }}-auth
+  namespace: {{ .Values.appName }}
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb
+    serviceAccount: {{ .Values.appName }}-account
+    audiences:
+      - vault
