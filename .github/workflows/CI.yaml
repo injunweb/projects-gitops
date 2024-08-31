@@ -1,0 +1,39 @@
+name: Generate GoCD Pipelines
+
+on:
+    push:
+        paths:
+            - "pipelines/**/values.yaml"
+            - "templates/gocd/**"
+    workflow_dispatch:
+
+jobs:
+    generate-pipelines:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Set up Helm
+              uses: azure/setup-helm@v1
+              with:
+                  version: "v3.6.3"
+
+            - name: Generate GoCD pipeline files
+              run: |
+                  BASE_PATH="pipelines"
+                  CHART_PATH="templates/gocd"
+
+                  for SERVICE in $(ls "$BASE_PATH"); do
+                    VALUES_FILE="./$BASE_PATH/$SERVICE/values.yaml"
+                    OUTPUT_FILE="./$BASE_PATH/$SERVICE/$SERVICE-pipeline.gocd.yaml"
+
+                    helm template $SERVICE $CHART_PATH -f $VALUES_FILE > $OUTPUT_FILE
+                  done
+
+            - name: Commit and push generated pipeline files
+              uses: EndBug/add-and-commit@v9
+              with:
+                  add: "pipelines/*-pipeline.gocd.yaml"
+                  message: "Generate GoCD pipeline files"
