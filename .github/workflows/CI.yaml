@@ -4,7 +4,7 @@ on:
     push:
         paths:
             - "pipelines/**/values.yaml"
-            - "templates/gocd/**"
+            - "templates/gocd/templates/deploy.yaml"
     workflow_dispatch:
 
 jobs:
