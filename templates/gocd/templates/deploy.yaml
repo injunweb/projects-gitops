@@ -5,11 +5,11 @@ pipelines:
     environment_variables:
       HARBOR_URL: "admin-harbor.injunweb.com"
       GOCD_HARBOR_USER: "k8s-reader"
-      GOCD_HARBOR_PASS: "{{SECRET:[secret-password-id][GOCD_HARBOR_PASS]}}"
+      GOCD_HARBOR_PASS: "{{`{{SECRET:[secret-password-id][GOCD_HARBOR_PASS]}}`}}"
       K8S_HARBOR_USER: "gocd-publisher"
-      K8S_HARBOR_PASS: "{{SECRET:[secret-password-id][K8S_HARBOR_PASS]}}"
+      K8S_HARBOR_PASS: "{{`{{SECRET:[secret-password-id][K8S_HARBOR_PASS]}}`}}"
       GITHUB_USER: "in-jun"
-      GITHUB_TOKEN: "{{SECRET:[secret-password-id][GITHUB_TOKEN]}}"
+      GITHUB_TOKEN: "{{`{{SECRET:[secret-password-id][GITHUB_TOKEN]}}`}}"
 
     label_template: "${git[:7]}"
     materials:
