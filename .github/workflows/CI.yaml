@@ -24,7 +24,7 @@ jobs:
                     VALUES_FILE="./$BASE_PATH/$SERVICE/values.yaml"
                     OUTPUT_FILE="./$BASE_PATH/$SERVICE/$SERVICE-pipeline.gocd.yaml"
 
-                    helm template $SERVICE $CHART_PATH -f $VALUES_FILE > $OUTPUT_FILE
+                    helm template $SERVICE $CHART_PATH -f $VALUES_FILE | tee $OUTPUT_FILE
                   done
 
             - name: Commit and push changes
