@@ -34,6 +34,6 @@ jobs:
 
                   git add .
                   git commit -m "Update GoCD pipeline files"
-                  git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/injunweb/gitops-repo.git HEAD
+                  git push
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
