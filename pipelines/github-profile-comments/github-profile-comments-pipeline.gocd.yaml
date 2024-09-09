@@ -16,7 +16,7 @@ pipelines:
     label_template: "${git[:7]}"
     materials:
       git:
-        git: "https://github.com/in-jun/github-profile-comments.git"
+        git: "https://github.com/in-jun/github-profile-comments"
         shallow_clone: false
         auto_update: true
         branch: "main"
