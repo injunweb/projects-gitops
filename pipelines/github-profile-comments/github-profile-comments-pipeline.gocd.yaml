@@ -26,8 +26,6 @@ pipelines:
           clean_workspace: true
           jobs:
             build:
-              resources:
-                - build
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,8 +49,6 @@ pipelines:
           clean_workspace: true
           jobs:
             deploy:
-              resources:
-                - deploy
               tasks:
                 - exec:
                     command: /bin/bash
