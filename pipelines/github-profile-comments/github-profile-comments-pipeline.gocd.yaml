@@ -1,0 +1,98 @@
+---
+# Source: gocd/templates/deploy.yaml
+format_version: 10
+pipelines:
+  build-github-profile-comments:
+    group: injunweb
+    environment_variables:
+      HARBOR_URL: "admin-harbor.injunweb.com"
+      GOCD_HARBOR_USER: "k8s-reader"
+      GOCD_HARBOR_PASS: "{{SECRET:[secret-password-id][GOCD_HARBOR_PASS]}}"
+      K8S_HARBOR_USER: "gocd-publisher"
+      K8S_HARBOR_PASS: "{{SECRET:[secret-password-id][K8S_HARBOR_PASS]}}"
+      GITHUB_USER: "in-jun"
+      GITHUB_TOKEN: "{{SECRET:[secret-password-id][GITHUB_TOKEN]}}"
+
+    label_template: "${git[:7]}"
+    materials:
+      git:
+        git: "https://github.com/in-jun/github-profile-comments.git"
+        shallow_clone: false
+        auto_update: true
+        branch: "main"
+
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            build:
+              resources:
+                - build
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        VERSION=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
+                        echo "Building Docker image from the app repository..."
+                        docker build -t ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION .
+
+                        if [ $? -eq 0 ]; then
+                          echo "Pushing Docker image to Harbor..."
+                          docker login -u ${GOCD_HARBOR_USER} -p ${GOCD_HARBOR_PASS} ${HARBOR_URL}
+                          docker push ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION
+                        else
+                          echo "Docker build failed"
+                          exit 1
+                        fi
+
+      - deploy:
+          clean_workspace: true
+          jobs:
+            deploy:
+              resources:
+                - deploy
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        echo "Cloning gitops repo and preparing Helm rendering..."
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
+                        cd gitops-repo
+
+                        echo "Ensuring the directory exists for Helm output..."
+
+                        echo "Rendering Helm templates with values file..."
+                        helm template app ./templates/application --values ./pipelines/github-profile-comments/values.yaml --set imageTag=$VERSION > ./pipelines/github-profile-comments/manifests.yaml
+
+                        echo "Committing rendered templates back to the repository..."
+                        git config --global user.name "in-jun"
+                        git config --global user.email "injuninjune@gmail.com"
+                        git add ./pipelines/github-profile-comments/manifests.yaml
+                        git commit -m "Updated Helm templates for github-profile-comments deployment with imageTag $VERSION"
+                        git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
+
+                        echo "Checking if namespace github-profile-comments exists..."
+                        if ! kubectl get namespace github-profile-comments; then
+                          echo "Namespace github-profile-comments does not exist, creating it..."
+                          kubectl create namespace github-profile-comments
+                        else
+                          echo "Namespace github-profile-comments already exists."
+                        fi
+
+                        echo "Creating imagePullSecrets for Harbor..."
+                        kubectl create secret docker-registry harbor-creds \
+                          --docker-server=${HARBOR_URL} \
+                          --docker-username=${K8S_HARBOR_USER} \
+                          --docker-password=${K8S_HARBOR_PASS} \
+                          --docker-email=k8s@k8s.com \
+                          --namespace github-profile-comments || echo "Secret already exists"
+
+                        echo "Patching the deployment with imagePullSecrets..."
+                        kubectl patch deployment github-profile-comments -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"harbor-creds"}]}}}}' --namespace github-profile-comments
+
+                        echo "Applying Helm-rendered templates to Kubernetes..."
+                        kubectl apply -f ./pipelines/github-profile-comments/manifests.yaml --namespace github-profile-comments
