@@ -24,6 +24,7 @@ pipelines:
           clean_workspace: true
           jobs:
             build:
+              elastic_profile_id: demo-app
               tasks:
                 - exec:
                     command: /bin/bash
@@ -47,6 +48,7 @@ pipelines:
           clean_workspace: true
           jobs:
             deploy:
+              elastic_profile_id: demo-app
               tasks:
                 - exec:
                     command: /bin/bash
