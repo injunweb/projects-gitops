@@ -38,6 +38,9 @@ pipelines:
                     arguments:
                       - -c
                       - |
+
+                        kubectl 
+
                         VERSION=$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)
                         echo "Building Docker image for ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION ..."
                         docker build -t ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION .
