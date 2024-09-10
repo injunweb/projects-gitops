@@ -2,6 +2,10 @@ format_version: 10
 pipelines:
   build-{{ .Values.appName }}:
     group: injunweb
+    lock_behavior: lockOnFailure
+    display_order: -1
+    label_template: "${git[:7]}"
+
     environment_variables:
       HARBOR_URL: "admin-harbor.injunweb.com"
       GOCD_HARBOR_USER: "k8s-reader"
@@ -11,7 +15,6 @@ pipelines:
       GITHUB_USER: "in-jun"
       GITHUB_TOKEN: "{{`{{SECRET:[secret-password-id][GITHUB_TOKEN]}}`}}"
 
-    label_template: "${git[:7]}"
     materials:
       git:
         git: "https://github.com/{{ .Values.userName }}/{{ .Values.appName }}"
@@ -25,22 +28,24 @@ pipelines:
           jobs:
             build:
               elastic_profile_id: demo-app
+              timeout: 0
+              fetch_materials: true
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
                       - |
-                        VERSION=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 8 | head -n 1)
-                        echo "Building Docker image from the app repository..."
+                        VERSION=$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)
+                        echo "Building Docker image for ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION ..."
                         docker build -t ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION .
 
                         if [ $? -eq 0 ]; then
-                          echo "Pushing Docker image to Harbor..."
+                          echo "Docker build succeeded. Pushing image to Harbor..."
                           docker login -u ${GOCD_HARBOR_USER} -p ${GOCD_HARBOR_PASS} ${HARBOR_URL}
                           docker push ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION
                         else
-                          echo "Docker build failed"
+                          echo "Docker build failed."
                           exit 1
                         fi
 
@@ -49,46 +54,50 @@ pipelines:
           jobs:
             deploy:
               elastic_profile_id: demo-app
+              timeout: 0
+              fetch_materials: true
               tasks:
                 - exec:
                     command: /bin/bash
                     arguments:
                       - -c
                       - |
-                        echo "Cloning gitops repo and preparing Helm rendering..."
+                        echo "Cloning GitOps repository..."
                         git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
                         cd gitops-repo
 
-                        echo "Ensuring the directory exists for Helm output..."
+                        echo "Rendering Helm templates..."
+                        helm template app ./templates/application \
+                          --values ./pipelines/{{ .Values.appName }}/values.yaml \
+                          --set imageTag=$VERSION > ./pipelines/{{ .Values.appName }}/manifests.yaml
 
-                        echo "Rendering Helm templates with values file..."
-                        helm template app ./templates/application --values ./pipelines/{{ .Values.appName }}/values.yaml --set imageTag=$VERSION > ./pipelines/{{ .Values.appName }}/manifests.yaml
-
-                        echo "Committing rendered templates back to the repository..."
+                        echo "Committing Helm templates to GitOps repository..."
                         git config --global user.name "in-jun"
                         git config --global user.email "injuninjune@gmail.com"
                         git add ./pipelines/{{ .Values.appName }}/manifests.yaml
-                        git commit -m "Updated Helm templates for {{ .Values.appName }} deployment with imageTag $VERSION"
+                        git commit -m "Updated Helm templates for {{ .Values.appName }} with imageTag $VERSION"
                         git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
 
                         echo "Checking if namespace {{ .Values.appName }} exists..."
                         if ! kubectl get namespace {{ .Values.appName }}; then
-                          echo "Namespace {{ .Values.appName }} does not exist, creating it..."
+                          echo "Namespace does not exist, creating it..."
                           kubectl create namespace {{ .Values.appName }}
+
+                          echo "Creating imagePullSecrets..."
+                          kubectl create secret docker-registry harbor-creds \
+                            --docker-server=${HARBOR_URL} \
+                            --docker-username=${K8S_HARBOR_USER} \
+                            --docker-password=${K8S_HARBOR_PASS} \
+                            --docker-email=k8s@k8s.com \
+                            --namespace {{ .Values.appName }} || echo "Secret already exists."
                         else
-                          echo "Namespace {{ .Values.appName }} already exists."
+                          echo "Namespace already exists."
                         fi
 
-                        echo "Creating imagePullSecrets for Harbor..."
-                        kubectl create secret docker-registry harbor-creds \
-                          --docker-server=${HARBOR_URL} \
-                          --docker-username=${K8S_HARBOR_USER} \
-                          --docker-password=${K8S_HARBOR_PASS} \
-                          --docker-email=k8s@k8s.com \
-                          --namespace {{ .Values.appName }} || echo "Secret already exists"
-
-                        echo "Patching the deployment with imagePullSecrets..."
-                        kubectl patch deployment {{ .Values.appName }} -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"harbor-creds"}]}}}}' --namespace {{ .Values.appName }}
-
-                        echo "Applying Helm-rendered templates to Kubernetes..."
+                        echo "Applying Kubernetes manifests..."
                         kubectl apply -f ./pipelines/{{ .Values.appName }}/manifests.yaml --namespace {{ .Values.appName }}
+
+                        echo "Patching deployment with imagePullSecrets..."
+                        kubectl patch deployment {{ .Values.appName }} \
+                          -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"harbor-creds"}]}}}}' \
+                          --namespace {{ .Values.appName }}
