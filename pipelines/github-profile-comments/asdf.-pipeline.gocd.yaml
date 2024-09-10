@@ -14,12 +14,10 @@ pipelines:
     stages:
       - default_stage:
           fetch_materials: true
-          keep_artifacts:
           clean_workspace:
           jobs:
             default_job:
               timeout: 0
-              elastic_profile_id: demo-app
               tasks:
                 - exec:
                     command: /bin/bash
