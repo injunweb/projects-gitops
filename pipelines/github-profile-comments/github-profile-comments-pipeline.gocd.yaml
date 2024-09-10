@@ -44,7 +44,7 @@ pipelines:
 
                         if [ $? -eq 0 ]; then
                           echo "Docker build succeeded. Pushing image to Harbor..."
-                          docker login -u ${GOCD_HARBOR_USER} -p ${GOCD_HARBOR_PASS} ${HARBOR_URL}
+                          echo "${GOCD_HARBOR_PASS}" | docker login -u ${GOCD_HARBOR_USER} --password-stdin ${HARBOR_URL}
                           docker push ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION
                         else
                           echo "Docker build failed."
