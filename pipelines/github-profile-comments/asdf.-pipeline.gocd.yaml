@@ -1,0 +1,35 @@
+format_version: 10
+pipelines:
+  asdf:
+    group: injunweb
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+    materials:
+      git-53a047b:
+        git: https://github.com/gocd-contrib/getting-started-repo
+        shallow_clone: true
+        auto_update: true
+        branch: master
+    stages:
+      - default_stage:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+          approval:
+            type: success
+            allow_only_on_success: false
+          jobs:
+            default_job:
+              timeout: 0
+              tabs:
+                Sample: my-artifact.html
+              elastic_profile_id: demo-app
+              artifacts:
+                - build:
+                    source: my-artifact.html
+                    destination: ""
+              tasks:
+                - exec:
+                    command: ./build
+                    run_if: passed
