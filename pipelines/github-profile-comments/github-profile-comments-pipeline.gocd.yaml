@@ -4,6 +4,7 @@ format_version: 10
 pipelines:
   build-github-profile-comments:
     group: injunweb
+
     label_template: "${git[:7]}"
 
     environment_variables:
@@ -11,6 +12,7 @@ pipelines:
       GOCD_HARBOR_USER: k8s-reader
       K8S_HARBOR_USER: gocd-publisher
       GITHUB_USER: in-jun
+
     secure_variables:
       GOCD_HARBOR_PASS: AES:aZQskk5ZgY59xsMaowd4lg==:5GOu1QHPYSywOfQgXj+AIA==
       K8S_HARBOR_PASS: AES:hMUeNLRInAPcVxHt+bciXw==:OEzbUFpEQnvKATNEn6S71g==
