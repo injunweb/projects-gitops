@@ -9,8 +9,8 @@ pipelines:
 
     environment_variables:
       HARBOR_URL: admin-harbor.injunweb.com
-      GOCD_HARBOR_USER: k8s-reader
-      K8S_HARBOR_USER: gocd-publisher
+      GOCD_HARBOR_USER: gocd-publisher
+      K8S_HARBOR_USER: k8s-reader
       GITHUB_USER: in-jun
 
     secure_variables:
@@ -38,9 +38,6 @@ pipelines:
                     arguments:
                       - -c
                       - |
-
-                        echo $USER
-
                         VERSION=$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)
                         echo "Building Docker image for ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION ..."
                         docker build -t ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION .
