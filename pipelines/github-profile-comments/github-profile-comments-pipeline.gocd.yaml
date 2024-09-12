@@ -14,9 +14,9 @@ pipelines:
       GITHUB_USER: in-jun
 
     secure_variables:
-      GOCD_HARBOR_PASS: AES:5nOQz2ZOn8pXZtG+lZpqQw==:gxhGNgHPJx/xhBHLXjzokA==
-      K8S_HARBOR_PASS: AES:Iq7Oo+VM2nZmDbukaxYTIQ==:qy8UCGNdxJVpBCAbvcxzhg==
-      GITHUB_TOKEN: AES:5F6Hwmj29COkbLI8g1XKIg==:4V4C9AE99pfvo6Y177Ygyba7UcGMYTSK4lXdk3j6D7KoaaBXJM+F4e4Gjtf1jDxb
+      GOCD_HARBOR_PASS: AES:NIt/x136N2Cu5hf7qg6eNw==:ELXteos0caMlG5ssCGbZtA==
+      K8S_HARBOR_PASS: AES:8TpDXjrUTqWXOYTbEkcz6A==:98UDcRYcW31pQcMC5K8w/w==
+      GITHUB_TOKEN: AES:OSKQMJLHd5J3k45gApjPxQ==:fLbIFcLx78WPuIzwPbhPkZiEynFMNAqb8JDTEe0xS2njikqd6tWqrtSY+H5SuKQj
 
     materials:
       git:
