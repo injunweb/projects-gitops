@@ -1,0 +1,14 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Values.appName }}-ingressroute
+  namespace: {{ .Values.appName }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`{{ .Values.appName }}.injunweb.com`)
+      kind: Rule
+      services:
+        - name: {{ .Values.appName }}
+          port: 80
