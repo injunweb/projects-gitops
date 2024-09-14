@@ -21,7 +21,7 @@ pipelines:
     materials:
       git:
         git: "https://github.com/in-jun/github-profile-comments"
-        shallow_clone: false
+        shallow_clone: true
         auto_update: true
         branch: "main"
 
