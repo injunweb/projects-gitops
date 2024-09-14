@@ -27,18 +27,12 @@ spec:
           ports:
             - containerPort: {{ .Values.port }}
           envFrom:
-          - secretRef:
-              name: {{ .Values.appName }}
+            - secretRef:
+                name: {{ .Values.appName }}
           resources:
             requests:
               memory: "2000Mi"
               cpu: "20m"
-              ephemeral-storage: "20Mi"
             limits:
               memory: "2000Mi"
-          readinessProbe:
-            tcpSocket:
-              port: {{ .Values.port }}
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            successThreshold: 3
+              cpu: "100m"
