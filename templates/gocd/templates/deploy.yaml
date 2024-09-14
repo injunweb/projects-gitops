@@ -6,6 +6,7 @@ pipelines:
     label_template: "${git[:7]}"
 
     environment_variables:
+      IMAGE_TAG: "${pipeline_counter}"
       HARBOR_URL: admin-harbor.injunweb.com
       GOCD_HARBOR_USER: gocd-pusher
       K8S_HARBOR_USER: k8s-reader
@@ -36,14 +37,13 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        VERSION=$(tr -dc 'a-z0-9' < /dev/urandom | fold -w 8 | head -n 1)
-                        echo "Building Docker image for ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION ..."
-                        docker build -t ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION .
+                        echo "Building Docker image for ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$IMAGE_TAG ..."
+                        docker build -t ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$IMAGE_TAG .
 
                         if [ $? -eq 0 ]; then
                           echo "Docker build succeeded. Pushing image to Harbor..."
                           echo "${GOCD_HARBOR_PASS}" | docker login -u ${GOCD_HARBOR_USER} --password-stdin ${HARBOR_URL}
-                          docker push ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$VERSION
+                          docker push ${HARBOR_URL}/injunweb/{{ .Values.appName }}:$IMAGE_TAG
                         else
                           echo "Docker build failed."
                           exit 1
@@ -68,13 +68,13 @@ pipelines:
                         echo "Rendering Helm templates..."
                         helm template app ./templates/applications \
                           --values ./pipelines/{{ .Values.appName }}/values.yaml \
-                          --set imageTag=$VERSION > ./pipelines/{{ .Values.appName }}/manifests.yaml
+                          --set imageTag=$IMAGE_TAG > ./pipelines/{{ .Values.appName }}/manifests.yaml
 
                         echo "Committing Helm templates to GitOps repository..."
                         git config --global user.name "in-jun"
                         git config --global user.email "injuninjune@gmail.com"
                         git add ./pipelines/{{ .Values.appName }}/manifests.yaml
-                        git commit -m "Updated Helm templates for {{ .Values.appName }} with imageTag $VERSION"
+                        git commit -m "Updated Helm templates for {{ .Values.appName }} with imageTag $IMAGE_TAG"
                         git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
 
                         echo "Checking if namespace {{ .Values.appName }} exists..."
