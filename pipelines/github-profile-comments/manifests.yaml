@@ -59,6 +59,8 @@ spec:
             limits:
               memory: "2000Mi"
               cpu: "100m"
+      imagePullSecrets:
+        - name: imagepullsecret
 ---
 # Source: applications/templates/ingressroute.yaml
 apiVersion: traefik.io/v1alpha1
