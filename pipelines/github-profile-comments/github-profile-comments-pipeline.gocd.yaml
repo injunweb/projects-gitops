@@ -45,7 +45,7 @@ pipelines:
                         if [ $? -eq 0 ]; then
                           echo "Docker build succeeded. Pushing image to Harbor..."
                           echo "${GOCD_HARBOR_PASS}" | docker login -u ${GOCD_HARBOR_USER} --password-stdin ${HARBOR_URL}
-                          docker --debug push ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION
+                          docker push ${HARBOR_URL}/injunweb/github-profile-comments:$VERSION
                         else
                           echo "Docker build failed."
                           exit 1
@@ -68,7 +68,7 @@ pipelines:
                         cd gitops-repo
 
                         echo "Rendering Helm templates..."
-                        helm template app ./templates/application \
+                        helm template app ./templates/applications \
                           --values ./pipelines/github-profile-comments/values.yaml \
                           --set imageTag=$VERSION > ./pipelines/github-profile-comments/manifests.yaml
 
