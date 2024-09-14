@@ -73,7 +73,7 @@ spec:
     - match: Host(`github-profile-comments.injunweb.com`)
       kind: Rule
       services:
-        - name: github-profile-comments
+        - name: github-profile-comments-service
           port: 80
 ---
 # Source: applications/templates/vault-auth.yaml
