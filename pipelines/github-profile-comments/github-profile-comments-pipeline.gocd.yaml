@@ -8,7 +8,7 @@ pipelines:
     label_template: "${git[:7]}"
 
     environment_variables:
-      IMAGE_TAG: "${pipeline_counter}"
+      IMAGE_TAG: "${GO_PIPELINE_LABEL}"
       HARBOR_URL: admin-harbor.injunweb.com
       GOCD_HARBOR_USER: gocd-pusher
       K8S_HARBOR_USER: k8s-reader
