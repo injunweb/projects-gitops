@@ -36,3 +36,5 @@ spec:
             limits:
               memory: "2000Mi"
               cpu: "100m"
+      imagePullSecrets:
+        - name: imagepullsecret

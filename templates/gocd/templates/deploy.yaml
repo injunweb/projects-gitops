@@ -82,7 +82,7 @@ pipelines:
                           kubectl create namespace {{ .Values.appName }}
 
                           echo "Creating imagePullSecrets..."
-                          kubectl create secret docker-registry harbor-creds \
+                          kubectl create secret docker-registry imagepullsecret \
                             --docker-server=${HARBOR_URL} \
                             --docker-username=${K8S_HARBOR_USER} \
                             --docker-password=${K8S_HARBOR_PASS} \
@@ -94,8 +94,3 @@ pipelines:
 
                         echo "Applying Kubernetes manifests..."
                         kubectl apply -f ./pipelines/{{ .Values.appName }}/manifests.yaml --namespace {{ .Values.appName }}
-
-                        echo "Patching deployment with imagePullSecrets..."
-                        kubectl patch deployment {{ .Values.appName }} \
-                          -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"harbor-creds"}]}}}}' \
-                          --namespace {{ .Values.appName }}
