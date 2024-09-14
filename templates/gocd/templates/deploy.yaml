@@ -18,7 +18,7 @@ pipelines:
 
     materials:
       git:
-        git: "https://github.com/{{ .Values.userName }}/{{ .Values.appName }}"
+        git: "{{ .Values.git }}"
         shallow_clone: true
         auto_update: true
         branch: "{{ .Values.branch }}"
