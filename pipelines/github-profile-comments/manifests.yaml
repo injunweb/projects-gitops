@@ -50,21 +50,15 @@ spec:
           ports:
             - containerPort: 8080
           envFrom:
-          - secretRef:
-              name: github-profile-comments
+            - secretRef:
+                name: github-profile-comments
           resources:
             requests:
               memory: "2000Mi"
               cpu: "20m"
-              ephemeral-storage: "20Mi"
             limits:
               memory: "2000Mi"
-          readinessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            successThreshold: 3
+              cpu: "100m"
 ---
 # Source: applications/templates/ingressroute.yaml
 apiVersion: traefik.io/v1alpha1
