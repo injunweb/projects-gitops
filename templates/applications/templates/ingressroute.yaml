@@ -10,5 +10,5 @@ spec:
     - match: Host(`{{ .Values.appName }}.injunweb.com`)
       kind: Rule
       services:
-        - name: {{ .Values.appName }}
+        - name: {{ .Values.appName }}-service
           port: 80
