@@ -84,7 +84,7 @@ pipelines:
                           kubectl create namespace github-profile-comments
 
                           echo "Creating imagePullSecrets..."
-                          kubectl create secret docker-registry harbor-creds \
+                          kubectl create secret docker-registry imagepullsecret \
                             --docker-server=${HARBOR_URL} \
                             --docker-username=${K8S_HARBOR_USER} \
                             --docker-password=${K8S_HARBOR_PASS} \
@@ -96,8 +96,3 @@ pipelines:
 
                         echo "Applying Kubernetes manifests..."
                         kubectl apply -f ./pipelines/github-profile-comments/manifests.yaml --namespace github-profile-comments
-
-                        echo "Patching deployment with imagePullSecrets..."
-                        kubectl patch deployment github-profile-comments \
-                          -p '{"spec":{"template":{"spec":{"imagePullSecrets":[{"name":"harbor-creds"}]}}}}' \
-                          --namespace github-profile-comments
