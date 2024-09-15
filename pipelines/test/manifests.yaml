@@ -17,7 +17,7 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: test-app
+    app: test
   type: ClusterIP
 ---
 # Source: applications/templates/deployment.yaml
