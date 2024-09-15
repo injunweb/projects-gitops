@@ -88,7 +88,7 @@ spec:
   method: kubernetes
   mount: kubernetes
   kubernetes:
-    role: injunweb
+    role: injunweb-role
     serviceAccount: github-profile-comments-account
     audiences:
       - vault
