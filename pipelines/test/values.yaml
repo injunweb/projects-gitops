@@ -1,0 +1,4 @@
+appName: test
+git: https://github.com/in-jun/test
+branch: main
+port: 8080
