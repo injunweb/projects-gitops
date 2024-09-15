@@ -105,6 +105,7 @@ spec:
   destination:
     name: test
     create: true
+  renewalPercent: 60
   vaultAuthRef: test/test-auth
   rolloutRestartTargets:
     - kind: Deployment
