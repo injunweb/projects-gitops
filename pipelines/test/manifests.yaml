@@ -93,19 +93,21 @@ spec:
     audiences:
       - vault
 ---
-# Source: applications/templates/vault-dynamic-secret.yaml
+# Source: applications/templates/vault-static-secret.yaml
 apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultDynamicSecret
+kind: VaultStaticSecret
 metadata:
   name: test-secret
   namespace: test
 spec:
+  type: kv-v1
   mount: injunweb-kv
-  path: test-v2
+  path: test
   destination:
     name: test
     create: true
   vaultAuthRef: test/test-auth
+  refreshAfter: 1m
   rolloutRestartTargets:
     - kind: Deployment
       name: test
