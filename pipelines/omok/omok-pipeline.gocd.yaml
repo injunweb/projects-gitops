@@ -1,0 +1,98 @@
+---
+# Source: gocd/templates/deploy.yaml
+format_version: 10
+pipelines:
+  build-omok:
+    group: injunweb
+
+    label_template: "${git[:7]}"
+
+    environment_variables:
+      HARBOR_URL: admin-harbor.injunweb.com
+      GOCD_HARBOR_USER: gocd-pusher
+      K8S_HARBOR_USER: k8s-reader
+      GITHUB_USER: in-jun
+
+    secure_variables:
+      GOCD_HARBOR_PASS: AES:NIt/x136N2Cu5hf7qg6eNw==:ELXteos0caMlG5ssCGbZtA==
+      K8S_HARBOR_PASS: AES:8TpDXjrUTqWXOYTbEkcz6A==:98UDcRYcW31pQcMC5K8w/w==
+      GITHUB_TOKEN: AES:OSKQMJLHd5J3k45gApjPxQ==:fLbIFcLx78WPuIzwPbhPkZiEynFMNAqb8JDTEe0xS2njikqd6tWqrtSY+H5SuKQj
+
+    materials:
+      git:
+        git: "https://github.com/in-jun/Online-omok"
+        shallow_clone: true
+        auto_update: true
+        branch: "main"
+
+    stages:
+      - build:
+          clean_workspace: true
+          jobs:
+            build:
+              timeout: 0
+              fetch_materials: true
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        echo "Building Docker image for ${HARBOR_URL}/injunweb/omok:${GO_PIPELINE_LABEL} ..."
+                        docker build -t ${HARBOR_URL}/injunweb/omok:${GO_PIPELINE_LABEL} .
+
+                        if [ $? -eq 0 ]; then
+                          echo "Docker build succeeded. Pushing image to Harbor..."
+                          echo "${GOCD_HARBOR_PASS}" | docker login -u ${GOCD_HARBOR_USER} --password-stdin ${HARBOR_URL}
+                          docker push ${HARBOR_URL}/injunweb/omok:${GO_PIPELINE_LABEL}
+                        else
+                          echo "Docker build failed."
+                          exit 1
+                        fi
+
+      - deploy:
+          clean_workspace: true
+          jobs:
+            deploy:
+              timeout: 0
+              fetch_materials: true
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        echo "Cloning GitOps repository..."
+                        git clone https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
+                        cd gitops-repo
+
+                        echo "Rendering Helm templates..."
+                        helm template app ./templates/applications \
+                          --values ./pipelines/omok/values.yaml \
+                          --set imageTag=${GO_PIPELINE_LABEL} > ./pipelines/omok/manifests.yaml
+
+                        echo "Committing Helm templates to GitOps repository..."
+                        git config --global user.name "in-jun"
+                        git config --global user.email "injuninjune@gmail.com"
+                        git add ./pipelines/omok/manifests.yaml
+                        git commit -m "Updated Helm templates for omok with imageTag ${GO_PIPELINE_LABEL}"
+                        git push https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com/injunweb/gitops-repo.git
+
+                        echo "Checking if namespace omok exists..."
+                        if ! kubectl get namespace omok; then
+                          echo "Namespace does not exist, creating it..."
+                          kubectl create namespace omok
+
+                          echo "Creating imagePullSecrets..."
+                          kubectl create secret docker-registry imagepullsecret \
+                            --docker-server=${HARBOR_URL} \
+                            --docker-username=${K8S_HARBOR_USER} \
+                            --docker-password=${K8S_HARBOR_PASS} \
+                            --docker-email=k8s@k8s.com \
+                            --namespace omok || echo "Secret already exists."
+                        else
+                          echo "Namespace already exists."
+                        fi
+
+                        echo "Applying Kubernetes manifests..."
+                        kubectl apply -f ./pipelines/omok/manifests.yaml --namespace omok
