@@ -101,7 +101,7 @@ metadata:
   namespace: test
 spec:
   mount: injunweb-kv
-  path: data/test
+  path: test
   destination:
     name: test
     create: true
