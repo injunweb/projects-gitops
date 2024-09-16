@@ -1,0 +1,4 @@
+appName: omok
+git: https://github.com/in-jun/Online-omok
+branch: main
+port: 8080
