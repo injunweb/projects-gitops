@@ -101,12 +101,12 @@ metadata:
   namespace: test
 spec:
   mount: injunweb-kv
-  path: test
+  path: data/test
   destination:
     name: test
     create: true
   renewalPercent: 60
-  refreshAfter: 30s
+  refreshAfter: 1m
   vaultAuthRef: test/test-auth
   rolloutRestartTargets:
     - kind: Deployment
