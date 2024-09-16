@@ -23,7 +23,7 @@ pipelines:
         git: "https://github.com/in-jun/Online-omok"
         shallow_clone: true
         auto_update: true
-        branch: "main"
+        branch: "master"
 
     stages:
       - build:
