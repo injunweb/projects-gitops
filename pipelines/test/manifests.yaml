@@ -15,7 +15,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 8080
+      targetPort: 1234
   selector:
     app: test
   type: ClusterIP
@@ -48,7 +48,7 @@ spec:
           image: admin-harbor.injunweb.com/injunweb/test:808f1f7
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 1234
           envFrom:
             - secretRef:
                 name: test
