@@ -106,6 +106,7 @@ spec:
     name: test
     create: true
   renewalPercent: 60
+  refreshAfter: 30s
   vaultAuthRef: test/test-auth
   rolloutRestartTargets:
     - kind: Deployment
