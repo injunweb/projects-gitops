@@ -55,7 +55,6 @@ pipelines:
           jobs:
             deploy:
               timeout: 0
-              fetch_materials: true
               tasks:
                 - exec:
                     command: /bin/bash
