@@ -27,11 +27,8 @@ pipelines:
 
     stages:
       - build:
-          clean_workspace: true
           jobs:
             build:
-              timeout: 0
-              fetch_materials: true
               tasks:
                 - exec:
                     command: /bin/bash
@@ -51,11 +48,8 @@ pipelines:
                         fi
 
       - deploy:
-          clean_workspace: true
           jobs:
             deploy:
-              timeout: 0
-              fetch_materials: false
               tasks:
                 - exec:
                     command: /bin/bash
