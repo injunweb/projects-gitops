@@ -1,0 +1,113 @@
+---
+# Source: applications/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: daedongyeojido-account
+  namespace: daedongyeojido
+---
+# Source: applications/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: daedongyeojido-service
+  namespace: daedongyeojido
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: daedongyeojido
+  type: ClusterIP
+---
+# Source: applications/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: daedongyeojido
+  namespace: daedongyeojido
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: daedongyeojido
+  template:
+    metadata:
+      labels:
+        app: daedongyeojido
+    spec:
+      serviceAccountName: daedongyeojido-account
+      containers:
+        - name: daedongyeojido
+          image: admin-harbor.injunweb.com/injunweb/daedongyeojido:55dc461
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: daedongyeojido
+          resources:
+            requests:
+              memory: "2000Mi"
+              cpu: "20m"
+            limits:
+              memory: "2000Mi"
+              cpu: "100m"
+      imagePullSecrets:
+        - name: imagepullsecret
+---
+# Source: applications/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: daedongyeojido-ingressroute
+  namespace: daedongyeojido
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`daedongyeojido.injunweb.com`)
+      kind: Rule
+      services:
+        - name: daedongyeojido-service
+          port: 80
+---
+# Source: applications/templates/vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: daedongyeojido-auth
+  namespace: daedongyeojido
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb-role
+    serviceAccount: daedongyeojido-account
+    audiences:
+      - vault
+---
+# Source: applications/templates/vault-static-secret.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: daedongyeojido-secret
+  namespace: daedongyeojido
+spec:
+  type: kv-v1
+  mount: injunweb-kv
+  path: daedongyeojido
+  destination:
+    name: daedongyeojido
+    create: true
+  vaultAuthRef: daedongyeojido/daedongyeojido-auth
+  refreshAfter: 1m
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: daedongyeojido
