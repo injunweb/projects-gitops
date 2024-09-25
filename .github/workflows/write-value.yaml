@@ -37,5 +37,10 @@ jobs:
                   git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}"
                   git push
 
-            - name: Pull latest changes
-              run: git pull origin main
+            - name: Trigger Generate GoCD Pipelines
+              run: |
+                  curl -X POST \
+                    -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    -d '{"event_type": "generate-pipelines"}' \
+                    https://api.github.com/repos/injunweb/gitops-repo/dispatches
