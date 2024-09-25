@@ -5,7 +5,8 @@ on:
         paths:
             - "pipelines/**/values.yaml"
             - "templates/gocd/templates/deploy.yaml"
-    workflow_dispatch:
+    repository_dispatch:
+        types: [generate_pipeline]
 
 jobs:
     generate-pipelines:
