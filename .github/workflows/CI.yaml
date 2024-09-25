@@ -6,7 +6,7 @@ on:
             - "pipelines/**/values.yaml"
             - "templates/gocd/templates/deploy.yaml"
     repository_dispatch:
-        types: [generate_pipelines]
+        types: [generate-pipelines]
 
 jobs:
     generate-pipelines:
