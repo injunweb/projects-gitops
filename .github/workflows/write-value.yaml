@@ -1,0 +1,41 @@
+name: Write values.yaml
+
+on:
+    repository_dispatch:
+        types: [write-values]
+
+jobs:
+    write_values_file:
+        runs-on: ubuntu-latest
+
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}
+            cancel-in-progress: false
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Create Directory
+              run: mkdir -p ./pipelines/${{ github.event.client_payload.appName }}
+
+            - name: Write values.yaml file
+              run: |
+                  cat <<EOF > ./pipelines/${{ github.event.client_payload.appName }}/values.yaml
+                  appName: ${{ github.event.client_payload.appName }}
+                  git: ${{ github.event.client_payload.git }}
+                  branch: ${{ github.event.client_payload.branch }}
+                  port: ${{ github.event.client_payload.port }}
+                  EOF
+
+            - name: Commit and push changes
+              run: |
+                  git config user.name "in-jun"
+                  git config user.email "injuninjune@gmail.com"
+
+                  git add .
+                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}"
+                  git push
+
+            - name: Pull latest changes
+              run: git pull origin main
