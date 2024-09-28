@@ -45,7 +45,7 @@ spec:
       serviceAccountName: daedongyeojido-account
       containers:
         - name: daedongyeojido
-          image: admin-harbor.injunweb.com/injunweb/daedongyeojido:4adb8d0
+          image: admin-harbor.injunweb.com/injunweb/daedongyeojido:d69faf5
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
