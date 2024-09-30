@@ -1,0 +1,113 @@
+---
+# Source: applications/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard-account
+  namespace: dashboard
+---
+# Source: applications/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard-service
+  namespace: dashboard
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: dashboard
+  type: ClusterIP
+---
+# Source: applications/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  namespace: dashboard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      serviceAccountName: dashboard-account
+      containers:
+        - name: dashboard
+          image: admin-harbor.injunweb.com/injunweb/dashboard:4a33f2f
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: dashboard
+          resources:
+            requests:
+              memory: "2000Mi"
+              cpu: "20m"
+            limits:
+              memory: "2000Mi"
+              cpu: "100m"
+      imagePullSecrets:
+        - name: imagepullsecret
+---
+# Source: applications/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dashboard-ingressroute
+  namespace: dashboard
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`dashboard.injunweb.com`)
+      kind: Rule
+      services:
+        - name: dashboard-service
+          port: 80
+---
+# Source: applications/templates/vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: dashboard-auth
+  namespace: dashboard
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb-role
+    serviceAccount: dashboard-account
+    audiences:
+      - vault
+---
+# Source: applications/templates/vault-static-secret.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: dashboard-secret
+  namespace: dashboard
+spec:
+  type: kv-v1
+  mount: injunweb-kv
+  path: dashboard
+  destination:
+    name: dashboard
+    create: true
+  vaultAuthRef: dashboard/dashboard-auth
+  refreshAfter: 1m
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: dashboard
