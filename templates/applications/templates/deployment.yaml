@@ -5,12 +5,12 @@ metadata:
   namespace: {{ .Values.appName }}
 spec:
   replicas: 1
-  revisionHistoryLimit: 0
+  revisionHistoryLimit: 1
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ .Values.appName }}
@@ -31,8 +31,8 @@ spec:
                 name: {{ .Values.appName }}
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "10m"
+              memory: "256Mi"
+              cpu: "5m"
             limits:
               memory: "512Mi"
               cpu: "50m"
