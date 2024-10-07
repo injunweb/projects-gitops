@@ -1,4 +1,4 @@
 appName: dsm-chat
 git: https://github.com/1408bg/DSM_Chat
 branch: main
-port: 3000
+port: 8080
