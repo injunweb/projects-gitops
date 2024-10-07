@@ -54,11 +54,11 @@ spec:
                 name: omok
           resources:
             requests:
-              memory: "2000Mi"
-              cpu: "20m"
+              memory: "1000Mi"
+              cpu: "10m"
             limits:
-              memory: "2000Mi"
-              cpu: "100m"
+              memory: "1500Mi"
+              cpu: "50m"
       imagePullSecrets:
         - name: imagepullsecret
 ---
