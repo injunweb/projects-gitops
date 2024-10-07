@@ -15,7 +15,7 @@ metadata:
 spec:
   ports:
     - port: 80
-      targetPort: 3000
+      targetPort: 8080
   selector:
     app: dsm-chat
   type: ClusterIP
@@ -48,17 +48,17 @@ spec:
           image: admin-harbor.injunweb.com/injunweb/dsm-chat:5817c9d
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
           envFrom:
             - secretRef:
                 name: dsm-chat
           resources:
             requests:
-              memory: "2000Mi"
-              cpu: "20m"
+              memory: "1000Mi"
+              cpu: "10m"
             limits:
-              memory: "2000Mi"
-              cpu: "100m"
+              memory: "1500Mi"
+              cpu: "50m"
       imagePullSecrets:
         - name: imagepullsecret
 ---
