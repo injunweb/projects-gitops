@@ -28,12 +28,12 @@ metadata:
   namespace: omok
 spec:
   replicas: 1
-  revisionHistoryLimit: 0
+  revisionHistoryLimit: 1
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 1
       maxUnavailable: 0
-    type: RollingUpdate
   selector:
     matchLabels:
       app: omok
@@ -54,10 +54,10 @@ spec:
                 name: omok
           resources:
             requests:
-              memory: "1000Mi"
-              cpu: "10m"
+              memory: "256Mi"
+              cpu: "5m"
             limits:
-              memory: "1500Mi"
+              memory: "512Mi"
               cpu: "50m"
       imagePullSecrets:
         - name: imagepullsecret
