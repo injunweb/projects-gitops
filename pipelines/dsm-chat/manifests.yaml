@@ -1,0 +1,113 @@
+---
+# Source: applications/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dsm-chat-account
+  namespace: dsm-chat
+---
+# Source: applications/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dsm-chat-service
+  namespace: dsm-chat
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+  selector:
+    app: dsm-chat
+  type: ClusterIP
+---
+# Source: applications/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dsm-chat
+  namespace: dsm-chat
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: dsm-chat
+  template:
+    metadata:
+      labels:
+        app: dsm-chat
+    spec:
+      serviceAccountName: dsm-chat-account
+      containers:
+        - name: dsm-chat
+          image: admin-harbor.injunweb.com/injunweb/dsm-chat:5817c9d
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: dsm-chat
+          resources:
+            requests:
+              memory: "2000Mi"
+              cpu: "20m"
+            limits:
+              memory: "2000Mi"
+              cpu: "100m"
+      imagePullSecrets:
+        - name: imagepullsecret
+---
+# Source: applications/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dsm-chat-ingressroute
+  namespace: dsm-chat
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`dsm-chat.injunweb.com`)
+      kind: Rule
+      services:
+        - name: dsm-chat-service
+          port: 80
+---
+# Source: applications/templates/vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: dsm-chat-auth
+  namespace: dsm-chat
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb-role
+    serviceAccount: dsm-chat-account
+    audiences:
+      - vault
+---
+# Source: applications/templates/vault-static-secret.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: dsm-chat-secret
+  namespace: dsm-chat
+spec:
+  type: kv-v1
+  mount: injunweb-kv
+  path: dsm-chat
+  destination:
+    name: dsm-chat
+    create: true
+  vaultAuthRef: dsm-chat/dsm-chat-auth
+  refreshAfter: 1m
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: dsm-chat
