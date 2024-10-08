@@ -77,6 +77,38 @@ spec:
       services:
         - name: omok-service
           port: 80
+      middlewares:
+        - name: omok-ratelimit
+        - name: omok-buffering
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: omok-ratelimit
+  namespace: omok
+spec:
+  rateLimit:
+    average: 20
+    burst: 30
+    period: 10s
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: omok-buffering
+  namespace: omok
+spec:
+  buffering:
+    maxRequestBodyBytes: 1000000
+    memRequestBodyBytes: 500000
+    maxResponseBodyBytes: 2000000
+    memResponseBodyBytes: 1000000
+    retryExpression: "IsNetworkError() && Attempts() <= 2"
 ---
 # Source: applications/templates/vault-auth.yaml
 apiVersion: secrets.hashicorp.com/v1beta1
