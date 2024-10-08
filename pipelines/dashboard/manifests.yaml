@@ -89,9 +89,9 @@ metadata:
   namespace: dashboard
 spec:
   rateLimit:
-    average: 20
-    burst: 30
-    period: 10s
+    average: 30
+    burst: 35
+    period: 1m
     sourceCriterion:
       ipStrategy:
         depth: 1
