@@ -45,7 +45,7 @@ spec:
       serviceAccountName: dsm-chat-account
       containers:
         - name: dsm-chat
-          image: admin-harbor.injunweb.com/injunweb/dsm-chat:5cf4f90
+          image: admin-harbor.injunweb.com/injunweb/dsm-chat:7b8da9b
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
