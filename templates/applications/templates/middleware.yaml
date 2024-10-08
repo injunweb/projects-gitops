@@ -5,12 +5,13 @@ metadata:
   namespace: {{ .Values.appName }}
 spec:
   rateLimit:
-    average: 20
-    burst: 30
+    average: 10
+    burst: 20
     period: 10s
     sourceCriterion:
       ipStrategy:
         depth: 1
+    buckets: 1
 
 ---
 apiVersion: traefik.io/v1alpha1
