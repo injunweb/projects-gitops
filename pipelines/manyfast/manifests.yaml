@@ -1,0 +1,145 @@
+---
+# Source: applications/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: manyfast-account
+  namespace: manyfast
+---
+# Source: applications/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: manyfast-service
+  namespace: manyfast
+spec:
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: manyfast
+  type: ClusterIP
+---
+# Source: applications/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manyfast
+  namespace: manyfast
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: manyfast
+  template:
+    metadata:
+      labels:
+        app: manyfast
+    spec:
+      serviceAccountName: manyfast-account
+      containers:
+        - name: manyfast
+          image: admin-harbor.injunweb.com/injunweb/manyfast:d25414e
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: manyfast
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "5m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+      imagePullSecrets:
+        - name: imagepullsecret
+---
+# Source: applications/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: manyfast-ingressroute
+  namespace: manyfast
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`manyfast.injunweb.com`)
+      kind: Rule
+      services:
+        - name: manyfast-service
+          port: 80
+      middlewares:
+        - name: manyfast-ratelimit
+        - name: manyfast-buffering
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: manyfast-ratelimit
+  namespace: manyfast
+spec:
+  rateLimit:
+    average: 30
+    burst: 35
+    period: 1m
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: manyfast-buffering
+  namespace: manyfast
+spec:
+  buffering:
+    maxRequestBodyBytes: 1000000
+    memRequestBodyBytes: 500000
+    maxResponseBodyBytes: 2000000
+    memResponseBodyBytes: 1000000
+    retryExpression: "IsNetworkError() && Attempts() <= 2"
+---
+# Source: applications/templates/vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: manyfast-auth
+  namespace: manyfast
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb-role
+    serviceAccount: manyfast-account
+    audiences:
+      - vault
+---
+# Source: applications/templates/vault-static-secret.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: manyfast-secret
+  namespace: manyfast
+spec:
+  type: kv-v1
+  mount: injunweb-kv
+  path: manyfast
+  destination:
+    name: manyfast
+    create: true
+  vaultAuthRef: manyfast/manyfast-auth
+  refreshAfter: 1m
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: manyfast
