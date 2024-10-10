@@ -45,7 +45,7 @@ spec:
       serviceAccountName: manyfast-account
       containers:
         - name: manyfast
-          image: admin-harbor.injunweb.com/injunweb/manyfast:d25414e
+          image: admin-harbor.injunweb.com/injunweb/manyfast:f65e6ca
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8000
