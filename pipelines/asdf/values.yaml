@@ -1,0 +1,4 @@
+appName: asdf
+git: https://github.com/in-jun/test123
+branch: main
+port: 8080
