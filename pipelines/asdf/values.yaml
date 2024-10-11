@@ -1,0 +1,4 @@
+appName: asdf
+git: https://github.com/in-jun/test
+branch: main
+port: 9090
