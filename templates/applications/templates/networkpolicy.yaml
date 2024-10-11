@@ -7,10 +7,17 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-    - Egress
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 192.168.0.0/16
   egress:
-    - to:
-        - ipBlock:
-            cidr: 192.168.0.0/16
-      ports: []
-{{- end }}
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 192.168.0.0/16
