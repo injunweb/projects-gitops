@@ -1,0 +1,29 @@
+name: Write values.yaml
+
+on:
+    repository_dispatch:
+        types: [remove-pipeline]
+
+jobs:
+    write_values_file:
+        runs-on: ubuntu-latest
+
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}
+            cancel-in-progress: false
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Delete Directory
+              run: rm -rf ./pipelines/${{ github.event.client_payload.appName }}
+
+            - name: Commit and push changes
+              run: |
+                  git config user.name "in-jun"
+                  git config user.email "injuninjune@gmail.com"
+
+                  git add .
+                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}"
+                  git push
