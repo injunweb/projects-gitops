@@ -130,7 +130,8 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`api.injunweb.com`)
+    - match: >
+        Host(`api.injunweb.com`)
       kind: Rule
       services:
         - name: api-service
