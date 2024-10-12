@@ -96,7 +96,8 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`dashboard.injunweb.com`)
+    - match: >
+        Host(`dashboard.injunweb.com`)
       kind: Rule
       services:
         - name: dashboard-service
