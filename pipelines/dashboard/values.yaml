@@ -2,3 +2,4 @@ appName: dashboard
 git: https://github.com/injunweb/dashboard-frontend
 branch: main
 port: 8080
+customHostname: dashboard.injunweb.com

@@ -2,3 +2,4 @@ appName: comment
 git: https://github.com/in-jun/github-profile-comments
 branch: main
 port: 8080
+customHostname: comment.injunweb.com

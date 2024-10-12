@@ -7,7 +7,9 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`{{ .Values.appName }}.injunweb.com`)
+    - match: >
+        Host(`{{ .Values.customHostname | default (printf "%s.ijw.app" .Values.appName) }}`)
+        {{- range .Values.additionalHostnames }} || Host(`{{ . }}`){{- end }}
       kind: Rule
       services:
         - name: {{ .Values.appName }}-service
