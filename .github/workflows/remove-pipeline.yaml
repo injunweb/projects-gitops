@@ -1,4 +1,4 @@
-name: Write values.yaml
+name: Remove Pipeline
 
 on:
     repository_dispatch:
