@@ -1,0 +1,39 @@
+name: Update Custom Hostname
+
+on:
+    repository_dispatch:
+        types: [update-custom-hostname]
+
+jobs:
+    update_values_file:
+        runs-on: ubuntu-latest
+
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref }}
+            cancel-in-progress: false
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Update values.yaml
+              run: |
+                  YAML_FILE="./pipelines/${{ github.event.client_payload.appName }}/values.yaml"
+                  if [ -f "$YAML_FILE" ]; then
+                    if grep -q "customHostname:" "$YAML_FILE"; then
+                      sed -i "s/customHostname:.*/customHostname: ${{ github.event.client_payload.hostname }}/" "$YAML_FILE"
+                    else
+                      echo "customHostname: ${{ github.event.client_payload.hostname }}" >> "$YAML_FILE"
+                    fi
+                  else
+                    echo "values.yaml not found for ${{ github.event.client_payload.appName }}"
+                    exit 1
+                  fi
+
+            - name: Commit and push changes
+              run: |
+                  git config user.name "in-jun"
+                  git config user.email "injuninjune@gmail.com"
+                  git add .
+                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Set customHostname to ${{ github.event.client_payload.hostname }}"
+                  git push
