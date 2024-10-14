@@ -8,8 +8,8 @@ spec:
     - web
   routes:
     - match: >
-        Host(`{{ .Values.customHostname | default (printf "%s.ijw.app" .Values.appName) }}`)
-        {{- range .Values.additionalHostnames }} || Host(`{{ . }}`){{- end }}
+        Host(`{{ .Values.primaryHostname }}`)
+        {{- range .Values.extraHostnames }} || Host(`{{ . }}`){{- end }}
       kind: Rule
       services:
         - name: {{ .Values.appName }}-service

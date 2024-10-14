@@ -2,3 +2,4 @@ appName: daedongyeojido
 git: https://github.com/Team-jeong-ho-kim/Daedongyeojido_FE_v3
 branch: main
 port: 3000
+primaryHostname: daedongyeojido.ijw.app

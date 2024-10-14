@@ -26,6 +26,7 @@ jobs:
                   git: ${{ github.event.client_payload.git }}
                   branch: ${{ github.event.client_payload.branch }}
                   port: ${{ github.event.client_payload.port }}
+                  primaryHostname: ${{ github.event.client_payload.primaryHostname }}
                   EOF
 
             - name: Commit and push changes

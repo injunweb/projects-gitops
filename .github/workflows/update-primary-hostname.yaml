@@ -1,8 +1,8 @@
-name: Add Additional Hostname
+name: Update Primary Hostname
 
 on:
     repository_dispatch:
-        types: [add-additional-hostname]
+        types: [update-primary-hostname]
 
 jobs:
     update_values_file:
@@ -20,11 +20,10 @@ jobs:
               run: |
                   YAML_FILE="./pipelines/${{ github.event.client_payload.appName }}/values.yaml"
                   if [ -f "$YAML_FILE" ]; then
-                    if grep -q "additionalHostnames:" "$YAML_FILE"; then
-                      sed -i "/additionalHostnames:/a \  - \"${{ github.event.client_payload.hostname }}\"" "$YAML_FILE"
+                    if grep -q "primaryHostname:" "$YAML_FILE"; then
+                      sed -i "s/primaryHostname:.*/primaryHostname: ${{ github.event.client_payload.hostname }}/" "$YAML_FILE"
                     else
-                      echo "additionalHostnames:" >> "$YAML_FILE"
-                      echo "  - \"${{ github.event.client_payload.hostname }}\"" >> "$YAML_FILE"
+                      echo "primaryHostname: ${{ github.event.client_payload.hostname }}" >> "$YAML_FILE"
                     fi
                   else
                     echo "values.yaml not found for ${{ github.event.client_payload.appName }}"
@@ -36,5 +35,5 @@ jobs:
                   git config user.name "in-jun"
                   git config user.email "injuninjune@gmail.com"
                   git add .
-                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Add ${{ github.event.client_payload.hostname }}"
+                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Set primaryHostname to ${{ github.event.client_payload.hostname }}"
                   git push

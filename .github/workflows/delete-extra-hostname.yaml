@@ -1,8 +1,8 @@
-name: Update Custom Hostname
+name: Delete Extra Hostnames
 
 on:
     repository_dispatch:
-        types: [update-custom-hostname]
+        types: [delete-extra-hostname]
 
 jobs:
     update_values_file:
@@ -20,11 +20,8 @@ jobs:
               run: |
                   YAML_FILE="./pipelines/${{ github.event.client_payload.appName }}/values.yaml"
                   if [ -f "$YAML_FILE" ]; then
-                    if grep -q "customHostname:" "$YAML_FILE"; then
-                      sed -i "s/customHostname:.*/customHostname: ${{ github.event.client_payload.hostname }}/" "$YAML_FILE"
-                    else
-                      echo "customHostname: ${{ github.event.client_payload.hostname }}" >> "$YAML_FILE"
-                    fi
+                    sed -i "/extraHostnames:/,/^[^ ]/ {/- \"${{ github.event.client_payload.hostname }}\"/d}" "$YAML_FILE"
+                    sed -i '/extraHostnames:/{N;/extraHostnames:\n$/d;}' "$YAML_FILE"
                   else
                     echo "values.yaml not found for ${{ github.event.client_payload.appName }}"
                     exit 1
@@ -35,5 +32,5 @@ jobs:
                   git config user.name "in-jun"
                   git config user.email "injuninjune@gmail.com"
                   git add .
-                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Set customHostname to ${{ github.event.client_payload.hostname }}"
+                  git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Remove ${{ github.event.client_payload.hostname }}"
                   git push
