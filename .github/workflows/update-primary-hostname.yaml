@@ -37,3 +37,10 @@ jobs:
                   git add .
                   git commit -m "Update values.yaml for ${{ github.event.client_payload.appName }}: Set primaryHostname to ${{ github.event.client_payload.hostname }}"
                   git push
+
+            - name: Trigger GoCD Pipeline
+              run: |
+                  curl -X POST "https://admin-gocd.injunweb.com/go/api/pipelines/build-${{ github.event.client_payload.appName }}/schedule" \
+                    -u "${{ secrets.GOCD_USERNAME }}:${{ secrets.GOCD_PASSWORD }}" \
+                    -H "Accept: application/vnd.go.cd.v1+json" \
+                    -H "X-GoCD-Confirm: true"
