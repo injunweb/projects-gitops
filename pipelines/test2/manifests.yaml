@@ -69,7 +69,7 @@ spec:
       serviceAccountName: test2-account
       containers:
         - name: test2
-          image: admin-harbor.injunweb.com/injunweb/test2:bedda9f
+          image: admin-harbor.injunweb.com/injunweb/test2:5eea52c
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 25565
