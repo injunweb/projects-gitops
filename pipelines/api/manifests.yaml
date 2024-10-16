@@ -103,7 +103,7 @@ spec:
       serviceAccountName: api-account
       containers:
         - name: api
-          image: admin-harbor.injunweb.com/injunweb/api:43678db
+          image: admin-harbor.injunweb.com/injunweb/api:929c4ab
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
