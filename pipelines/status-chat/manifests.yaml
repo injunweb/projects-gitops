@@ -69,7 +69,7 @@ spec:
       serviceAccountName: status-chat-account
       containers:
         - name: status-chat
-          image: admin-harbor.injunweb.com/injunweb/status-chat:5b00a6d
+          image: admin-harbor.injunweb.com/injunweb/status-chat:f052443
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
