@@ -12,6 +12,10 @@ jobs:
     generate-pipelines:
         runs-on: ubuntu-latest
 
+        concurrency:
+            group: app-pipeline-group-${{ github.event.client_payload.appName }}
+            cancel-in-progress: false
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v3

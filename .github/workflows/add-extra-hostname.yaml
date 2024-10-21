@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
 
         concurrency:
-            group: ${{ github.workflow }}-${{ github.ref }}
+            group: app-extra-hostname-group-${{ github.event.client_payload.appName }}
             cancel-in-progress: false
 
         steps:
