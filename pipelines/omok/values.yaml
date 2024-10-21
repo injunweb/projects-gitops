@@ -3,3 +3,5 @@ git: https://github.com/in-jun/Online-omok
 branch: master
 port: 8080
 primaryHostname: omok.ijw.app
+extraHostnames:
+  - "stonify5.com"
