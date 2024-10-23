@@ -69,7 +69,7 @@ spec:
       serviceAccountName: dashboard-account
       containers:
         - name: dashboard
-          image: admin-harbor.injunweb.com/injunweb/dashboard:6fc4983
+          image: admin-harbor.injunweb.com/injunweb/dashboard:2942b93
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
