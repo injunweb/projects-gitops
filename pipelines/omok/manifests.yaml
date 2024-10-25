@@ -97,7 +97,7 @@ spec:
     - web
   routes:
     - match: >
-        Host(`omok.ijw.app`)
+        Host(`omok.ijw.app`) || Host(`stonify5.com`)
       kind: Rule
       services:
         - name: omok-service
