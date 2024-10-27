@@ -1,0 +1,194 @@
+---
+# Source: applications/templates/networkpolicy.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: dsm-chat-networkpolicy
+  namespace: dsm-chat
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 192.168.0.0/16
+              - 10.244.0.0/16
+              - 10.96.0.0/12
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              internal: "true"
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 192.168.0.0/16
+              - 10.244.0.0/16
+              - 10.96.0.0/12
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              internal: "true"
+---
+# Source: applications/templates/service-account.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dsm-chat-account
+  namespace: dsm-chat
+---
+# Source: applications/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: dsm-chat-service
+  namespace: dsm-chat
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: dsm-chat
+  type: ClusterIP
+---
+# Source: applications/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dsm-chat
+  namespace: dsm-chat
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: dsm-chat
+  template:
+    metadata:
+      labels:
+        app: dsm-chat
+    spec:
+      serviceAccountName: dsm-chat-account
+      containers:
+        - name: dsm-chat
+          image: admin-harbor.injunweb.com/injunweb/dsm-chat:601b6fc
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: dsm-chat
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "5m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+      imagePullSecrets:
+        - name: imagepullsecret
+---
+# Source: applications/templates/ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: dsm-chat-ingressroute
+  namespace: dsm-chat
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: >
+        Host(`dsm-chat.ijw.app`)
+      kind: Rule
+      services:
+        - name: dsm-chat-service
+          port: 80
+      middlewares:
+        - name: dsm-chat-ratelimit
+        - name: dsm-chat-buffering
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: dsm-chat-ratelimit
+  namespace: dsm-chat
+spec:
+  rateLimit:
+    average: 30
+    burst: 35
+    period: 1m
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+---
+# Source: applications/templates/middleware.yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: dsm-chat-buffering
+  namespace: dsm-chat
+spec:
+  buffering:
+    maxRequestBodyBytes: 1000000
+    memRequestBodyBytes: 500000
+    maxResponseBodyBytes: 2000000
+    memResponseBodyBytes: 1000000
+    retryExpression: "IsNetworkError() && Attempts() <= 2"
+---
+# Source: applications/templates/vault-auth.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: dsm-chat-auth
+  namespace: dsm-chat
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: injunweb-role
+    serviceAccount: dsm-chat-account
+    audiences:
+      - vault
+---
+# Source: applications/templates/vault-static-secret.yaml
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: dsm-chat-secret
+  namespace: dsm-chat
+spec:
+  type: kv-v1
+  mount: injunweb-kv
+  path: dsm-chat
+  destination:
+    name: dsm-chat
+    create: true
+  vaultAuthRef: dsm-chat/dsm-chat-auth
+  refreshAfter: 1m
+  rolloutRestartTargets:
+    - kind: Deployment
+      name: dsm-chat
