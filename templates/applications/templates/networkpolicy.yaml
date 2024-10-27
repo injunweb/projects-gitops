@@ -15,17 +15,21 @@ spec:
             cidr: 0.0.0.0/0
             except:
               - 192.168.0.0/16
-              - 10.0.0.0/8
-    - namespaceSelector:
-        matchLabels:
-          internal: "true"
+              - 10.244.0.0/16
+              - 10.96.0.0/12
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              internal: "true"
   egress:
     - to:
         - ipBlock:
             cidr: 0.0.0.0/0
             except:
               - 192.168.0.0/16
-              - 10.0.0.0/8
+              - 10.244.0.0/16
+              - 10.96.0.0/12
+    - to:
         - namespaceSelector:
             matchLabels:
               internal: "true"
