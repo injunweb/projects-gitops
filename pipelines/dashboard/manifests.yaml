@@ -21,6 +21,10 @@ spec:
     - from:
         - namespaceSelector:
             matchLabels:
+              kubernetes.io/metadata.name: traefik
+    - from:
+        - namespaceSelector:
+            matchLabels:
               internal: "true"
   egress:
     - to:
@@ -30,6 +34,10 @@ spec:
               - 192.168.0.0/16
               - 10.244.0.0/16
               - 10.96.0.0/12
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
     - to:
         - namespaceSelector:
             matchLabels:
