@@ -1,0 +1,5 @@
+appName: test2
+git: https://github.com/hy2n/test
+branch: Fuck
+port: 25565
+primaryHostname: test2.ijw.app
