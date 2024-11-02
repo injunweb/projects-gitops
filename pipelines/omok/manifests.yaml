@@ -98,7 +98,7 @@ spec:
       serviceAccountName: omok-account
       containers:
         - name: omok
-          image: admin-harbor.injunweb.com/injunweb/omok:6c74eb9
+          image: admin-harbor.injunweb.com/injunweb/omok:79f7976
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
