@@ -98,7 +98,7 @@ spec:
       serviceAccountName: comment-account
       containers:
         - name: comment
-          image: admin-harbor.injunweb.com/injunweb/comment:321498d
+          image: admin-harbor.injunweb.com/injunweb/comment:2b9f2b0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
