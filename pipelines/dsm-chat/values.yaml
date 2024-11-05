@@ -1,0 +1,5 @@
+appName: dsm-chat
+git: https://github.com/1408bg/DSM_Chat
+branch: main
+port: 8080
+primaryHostname: dsm-chat.ijw.app
