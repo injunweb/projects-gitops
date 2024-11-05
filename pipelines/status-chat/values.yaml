@@ -1,5 +1,0 @@
-appName: status-chat
-git: https://github.com/1408bg/status-chat
-branch: main
-port: 3000
-primaryHostname: status-chat.ijw.app
