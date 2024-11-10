@@ -1,0 +1,5 @@
+appName: commit-canvas
+git: https://github.com/in-jun/commit-canvas
+branch: main
+port: 8080
+primaryHostname: commit-canvas.ijw.app
