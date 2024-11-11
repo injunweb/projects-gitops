@@ -98,7 +98,7 @@ spec:
       serviceAccountName: commit-canvas-account
       containers:
         - name: commit-canvas
-          image: admin-harbor.injunweb.com/injunweb/commit-canvas:612568e
+          image: admin-harbor.injunweb.com/injunweb/commit-canvas:6445b3e
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
