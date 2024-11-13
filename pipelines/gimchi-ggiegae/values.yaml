@@ -1,0 +1,5 @@
+appName: gimchi-ggiegae
+git: https://github.com/AI-together/ai-together-backend
+branch: main
+port: 8888
+primaryHostname: gimchi-ggiegae.ijw.app
