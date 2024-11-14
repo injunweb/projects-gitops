@@ -1,0 +1,5 @@
+appName: file-server
+git: https://github.com/1408bg/file-server
+branch: main
+port: 3000
+primaryHostname: file-server.ijw.app
