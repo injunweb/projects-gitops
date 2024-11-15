@@ -126,7 +126,7 @@ spec:
     - web
   routes:
     - match: >
-        Host(`status-chat.ijw.app`) || Host(`manyfast.ijw.app`)
+        Host(`status-chat.ijw.app`)
       kind: Rule
       services:
         - name: status-chat-service
