@@ -4,5 +4,4 @@ branch: main
 port: 3000
 primaryHostname: status-chat.ijw.app
 extraHostnames:
-  - "omok.ijw.app"
   - "manyfast.ijw.app"
