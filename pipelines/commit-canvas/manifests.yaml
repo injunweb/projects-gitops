@@ -143,8 +143,8 @@ metadata:
   namespace: commit-canvas
 spec:
   rateLimit:
-    average: 30
-    burst: 35
+    average: 100
+    burst: 150
     period: 1m
     sourceCriterion:
       ipStrategy:
