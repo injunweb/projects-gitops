@@ -5,8 +5,8 @@ metadata:
   namespace: {{ .Values.appName }}
 spec:
   rateLimit:
-    average: 30
-    burst: 35
+    average: 100
+    burst: 150
     period: 1m
     sourceCriterion:
       ipStrategy:
