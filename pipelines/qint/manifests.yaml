@@ -98,7 +98,7 @@ spec:
       serviceAccountName: qint-account
       containers:
         - name: qint
-          image: admin-harbor.injunweb.com/injunweb/qint:e16fd13
+          image: admin-harbor.injunweb.com/injunweb/qint:8894818
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
