@@ -98,7 +98,7 @@ spec:
       serviceAccountName: gimchi-ggiegae-account
       containers:
         - name: gimchi-ggiegae
-          image: admin-harbor.injunweb.com/injunweb/gimchi-ggiegae:a932c2f
+          image: admin-harbor.injunweb.com/injunweb/gimchi-ggiegae:c52fe0f
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
