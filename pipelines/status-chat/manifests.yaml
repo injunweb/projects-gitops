@@ -98,7 +98,7 @@ spec:
       serviceAccountName: status-chat-account
       containers:
         - name: status-chat
-          image: admin-harbor.injunweb.com/injunweb/status-chat:ac9e552
+          image: admin-harbor.injunweb.com/injunweb/status-chat:9da9732
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
