@@ -1,5 +1,5 @@
 appName: fw-shooting
 git: https://github.com/1408bg/fwShooting
 branch: main
-port: %!d(string=3000)
+port: 3000
 primaryHostname: fw-shooting.ijw.app
