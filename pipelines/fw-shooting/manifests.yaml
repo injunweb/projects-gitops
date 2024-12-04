@@ -98,7 +98,7 @@ spec:
       serviceAccountName: fw-shooting-account
       containers:
         - name: fw-shooting
-          image: admin-harbor.injunweb.com/injunweb/fw-shooting:8bb373d
+          image: admin-harbor.injunweb.com/injunweb/fw-shooting:cb0b920
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
