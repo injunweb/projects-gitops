@@ -98,7 +98,7 @@ spec:
       serviceAccountName: file-server-account
       containers:
         - name: file-server
-          image: admin-harbor.injunweb.com/injunweb/file-server:62d76f0
+          image: admin-harbor.injunweb.com/injunweb/file-server:c172761
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
