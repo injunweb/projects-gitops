@@ -98,7 +98,7 @@ spec:
       serviceAccountName: kc-shooting-account
       containers:
         - name: kc-shooting
-          image: admin-harbor.injunweb.com/injunweb/kc-shooting:3f1fabe
+          image: admin-harbor.injunweb.com/injunweb/kc-shooting:c53480e
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
