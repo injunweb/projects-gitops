@@ -1,6 +1,0 @@
-appName: api
-git: https://github.com/injunweb/backend-server
-branch: main
-port: 8080
-primaryHostname: api.injunweb.com
-enableClusterAdmin: true
