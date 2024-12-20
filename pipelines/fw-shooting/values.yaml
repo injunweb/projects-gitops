@@ -1,5 +1,0 @@
-appName: fw-shooting
-git: https://github.com/1408bg/fwShooting
-branch: main
-port: 3000
-primaryHostname: fw-shooting.ijw.app
