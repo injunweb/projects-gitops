@@ -1,5 +1,0 @@
-appName: manyfast
-git: https://github.com/1408bg/manyfast
-branch: main
-port: 8000
-primaryHostname: manyfast.ijw.app
