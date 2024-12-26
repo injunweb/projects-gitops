@@ -1,5 +1,0 @@
-appName: qint
-git: https://github.com/Q-int/Qint_backend
-branch: main
-port: 8080
-primaryHostname: qint.ijw.app
