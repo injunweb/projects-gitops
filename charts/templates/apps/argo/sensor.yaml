@@ -1,0 +1,29 @@
+{{- range $app := .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: {{ $app.name }}-sensor
+  namespace: {{ $.Values.project }}
+spec:
+  template:
+    serviceAccountName: {{ $app.name }}-sa
+  dependencies:
+    - name: github-dep
+      eventSourceName: {{ $app.name }}-github
+      eventName: {{ $app.name }}
+  triggers:
+    - template:
+        name: workflow-trigger
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: {{ $app.name }}-build-
+              spec:
+                workflowTemplateRef:
+                  name: {{ $app.name }}-workflow
+{{- end }}

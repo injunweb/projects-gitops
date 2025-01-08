@@ -1,0 +1,55 @@
+applications:
+  - name: app1
+    imageTag: "v1.0.0"
+    ghInstallId: 0
+    ghOwner: example-org
+    ghRepo: custom-app
+    ghBranch: main
+    dockerfilePath: "./Dockerfile"
+    port: 5000
+    expose:
+      enabled: true
+      primaryDomain: custom.example.com
+      additionalDomains:
+        - custom2.example.com
+      path: /
+
+  - name: app2
+    imageTag: "v1.0.0"
+    ghInstallId: 0
+    ghOwner: example-org
+    ghRepo: custom-app
+    ghBranch: main
+    dockerfilePath: "./Dockerfile"
+    port: 5000
+    expose:
+      enabled: true
+      primaryDomain: custom.example.com
+      additionalDomains:
+        - custom2.example.com
+      path: /
+
+databases:
+  - name: db1
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 20Gi
+
+  - name: db2
+    type: postgres
+    version: "14"
+    port: 5432
+    size: 20Gi
+
+  - name: db3
+    type: mongo
+    version: "5.0"
+    port: 27017
+    size: 20Gi
+
+  - name: db4
+    type: redis
+    version: "6.0"
+    port: 6379
+    size: 20Gi

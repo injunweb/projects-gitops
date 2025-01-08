@@ -1,0 +1,89 @@
+{{- range $db := .Values.databases }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $db.name }}
+  namespace: {{ $.Values.project }}
+spec:
+  serviceName: {{ $db.name }}
+  selector:
+    matchLabels:
+      app: {{ $db.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $db.name }}
+    spec:
+      containers:
+      - name: {{ $db.name }}
+        image: {{ $db.type }}:{{ $db.version }}
+        {{- if eq $db.type "mysql" }}
+        env:
+        - name: MYSQL_DATABASE
+          value: {{ $db.name }}_db
+        - name: MYSQL_USER
+          value: {{ $db.name }}_user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- else if eq $db.type "redis" }}
+        args: ["--requirepass", "$(REDIS_PASSWORD)"]
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- else if eq $db.type "postgres" }}
+        env:
+        - name: POSTGRES_DB
+          value: {{ $db.name }}_db
+        - name: POSTGRES_USER
+          value: {{ $db.name }}_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- else if eq $db.type "mongodb" }}
+        env:
+        - name: MONGO_INITDB_DATABASE
+          value: {{ $db.name }}_db
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: {{ $db.name }}_user
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- end }}
+        ports:
+        - containerPort: {{ $db.port }}
+        volumeMounts:
+        - name: data
+          {{- if eq $db.type "mysql" }}
+          mountPath: /var/lib/mysql
+          {{- else if eq $db.type "redis" }}
+          mountPath: /data
+          {{- else if eq $db.type "postgres" }}
+          mountPath: /var/lib/postgresql/data
+          {{- else if eq $db.type "mongodb" }}
+          mountPath: /data/db
+          {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ $db.size }}
+{{- end }} 

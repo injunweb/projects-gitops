@@ -1,0 +1,24 @@
+{{- range $app := .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: {{ $app.name }}-workflow
+  namespace: {{ $.Values.project }}
+spec:
+  serviceAccountName: {{ $app.name }}-sa
+  entrypoint: build
+  templates:
+    - name: build
+      dag:
+        tasks:
+          - name: build
+            template: build-container
+
+    - name: build-container
+      container:
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+          - "--dockerfile=Dockerfile"
+          - "--context=git://github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git"
+{{- end }}

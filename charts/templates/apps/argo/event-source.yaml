@@ -1,0 +1,32 @@
+{{- range $app := .Values.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: {{ $app.name }}-github
+  namespace: {{ $.Values.project }}
+spec:
+  service:
+    ports:
+      - port: 12000
+        targetPort: 12000
+        name: webhook
+  github:
+    {{ $app.name }}-github:
+      owner: {{ $app.ghOwner }}
+      repository: {{ $app.ghRepo }}
+      webhook:
+        endpoint: /{{ $.Values.project }}-{{ $app.name }}
+        port: "12000"
+        method: POST
+        url: http://{{ $app.name }}-github-eventsource-svc.{{ $.Values.project }}.svc.cluster.local
+      events:
+        - push
+      githubApp:
+        privateKey: <path:argocd/data/github#githubAppPrivateKey>
+        appID: <path:argocd/data/github#githubAppID>
+        installationID: {{ $app.ghInstallId }}
+      insecure: true
+      active: true
+      contentType: json
+{{- end }}

@@ -1,0 +1,15 @@
+{{- range $db := .Values.databases }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $db.name }}
+  namespace: {{ $.Values.project }}
+spec:
+  ports:
+  - port: {{ $db.port }}
+    targetPort: {{ $db.port }}
+  selector:
+    app: {{ $db.name }}
+  clusterIP: None
+{{- end }}

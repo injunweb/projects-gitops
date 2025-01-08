@@ -1,0 +1,88 @@
+{{- range $app := .Values.applications }}
+{{- if $app.imageTag }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $app.name }}
+  namespace: {{ $.Values.project }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $app.name }}
+    spec:
+      containers:
+      - name: {{ $app.name }}
+        image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.imageTag }}
+        ports:
+        - containerPort: {{ $app.port }}
+        envFrom:
+        - secretRef:
+            name: {{ $app.name }}-secret
+        env:
+        {{- range $db := $.Values.databases }}
+        {{- if eq $db.type "mysql" }}
+        - name: {{ $db.name | upper }}_HOST
+          value: {{ $db.name }}
+        - name: {{ $db.name | upper }}_PORT
+          value: {{ $db.port | quote }}
+        - name: {{ $db.name | upper }}_DATABASE
+          value: {{ $db.name }}_db
+        - name: {{ $db.name | upper }}_USER
+          value: {{ $db.name }}_user
+        - name: {{ $db.name | upper }}_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- end }}
+        {{- if eq $db.type "redis" }}
+        - name: {{ $db.name | upper }}_HOST
+          value: {{ $db.name }}
+        - name: {{ $db.name | upper }}_PORT
+          value: {{ $db.port | quote }}
+        - name: {{ $db.name | upper }}_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- end }}
+        {{- if eq $db.type "postgres" }}
+        - name: {{ $db.name | upper }}_HOST
+          value: {{ $db.name }}
+        - name: {{ $db.name | upper }}_PORT
+          value: {{ $db.port | quote }}
+        - name: {{ $db.name | upper }}_DB
+          value: {{ $db.name }}_db
+        - name: {{ $db.name | upper }}_USER
+          value: {{ $db.name }}_user
+        - name: {{ $db.name | upper }}_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- end }}
+        {{- if eq $db.type "mongodb" }}
+        - name: {{ $db.name | upper }}_HOST
+          value: {{ $db.name }}
+        - name: {{ $db.name | upper }}_PORT
+          value: {{ $db.port | quote }}
+        - name: {{ $db.name | upper }}_DB
+          value: {{ $db.name }}_db
+        - name: {{ $db.name | upper }}_USER
+          value: {{ $db.name }}_user
+        - name: {{ $db.name | upper }}_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $db.name }}-secret
+              key: password
+        {{- end }}
+        {{- end }}
+      imagePullSecrets:
+        - name: registry-secret
+{{- end }}
+{{- end }}
