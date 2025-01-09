@@ -1,0 +1,71 @@
+name: Configuration API
+
+on:
+  repository_dispatch:
+    types: [config-api]
+
+jobs:
+  handle-request:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: config-update
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install yq
+        run: |
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+          chmod +x /usr/local/bin/yq
+
+      - name: Process Request
+        run: |
+          PATH_PARAMS=${{ github.event.client_payload.path }}
+          ACTION=${{ github.event.client_payload.action }}
+          SPEC=${{ toJson(github.event.client_payload.spec) }}
+
+          IFS='/' read -r -a PATH_ARRAY <<< "$PATH_PARAMS"
+          RESOURCE_TYPE="${PATH_ARRAY[0]}"    # projects
+          PROJECT="${PATH_ARRAY[1]}"          # myproject
+          SUB_RESOURCE="${PATH_ARRAY[2]}"     # applications/databases
+          NAME="${PATH_ARRAY[3]}"             # myapp/mydb
+
+          FILE="projects/$PROJECT.yaml"
+
+          case "$ACTION" in
+            "apply")
+              mkdir -p $(dirname $FILE)
+              if [ "$RESOURCE_TYPE" = "projects" ] && [ ! -f "$FILE" ]; then
+                echo "applications: []" > $FILE
+                echo "databases: []" >> $FILE
+              fi
+
+              if [ -f "$FILE" ]; then
+                if [ "$SUB_RESOURCE" = "applications" ]; then
+                  yq eval "(.applications[] | select(.name == \"$NAME\")) *= $SPEC" -i $FILE
+                elif [ "$SUB_RESOURCE" = "databases" ]; then
+                  yq eval "(.databases[] | select(.name == \"$NAME\")) *= $SPEC" -i $FILE
+                fi
+              fi
+              ;;
+
+            "remove")
+              if [ -f "$FILE" ]; then
+                if [ "$SUB_RESOURCE" = "applications" ]; then
+                  yq eval "del(.applications[] | select(.name == \"$NAME\"))" -i $FILE
+                elif [ "$SUB_RESOURCE" = "databases" ]; then
+                  yq eval "del(.databases[] | select(.name == \"$NAME\"))" -i $FILE
+                elif [ -z "$SUB_RESOURCE" ]; then
+                  rm $FILE
+                fi
+              fi
+              ;;
+          esac
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "in-jun"
+          git config user.email "injuninjune@gmail.com"
+          git add .
+          git commit -m "${{ github.event.client_payload.action }} ${{ github.event.client_payload.path }}"
+          git push
