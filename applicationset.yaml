@@ -22,7 +22,7 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - ../projects/{{path.basename}}.yaml
+            - ../../projects/{{path.basename}}.yaml
           values: |
             project: "{{path.basename}}"
       destination:
