@@ -11,7 +11,7 @@ spec:
   dependencies:
     - name: github-dep
       eventSourceName: {{ $app.name }}-github
-      eventName: {{ $app.name }}
+      eventName: {{ $app.name }}-github
   triggers:
     - template:
         name: workflow-trigger

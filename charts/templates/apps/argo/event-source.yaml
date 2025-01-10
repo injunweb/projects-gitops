@@ -13,8 +13,10 @@ spec:
         name: webhook
   github:
     {{ $app.name }}-github:
-      owner: {{ $app.ghOwner }}
-      repository: {{ $app.ghRepo }}
+      repositories:
+        - owner: {{ $app.ghOwner }}
+          names:
+            - {{ $app.ghRepo }}
       webhook:
         endpoint: /{{ $.Values.project }}-{{ $app.name }}
         port: "12000"
@@ -22,11 +24,11 @@ spec:
         url: https://webhook.injunweb.com/{{ $.Values.project }}-{{ $app.name }}
       events:
         - push
-      githubApp:
-        privateKey: <path:argocd/data/github#githubAppPrivateKey>
-        appID: <path:argocd/data/github#githubAppID>
-        installationID: {{ $app.ghInstallId }}
-      insecure: true
+        - delete
+      apiToken:
+        name: github-api-token
+        key: token
+      insecure: false
       active: true
       contentType: json
 {{- end }}

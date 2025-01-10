@@ -1,7 +1,6 @@
 applications:
   - name: app1
     imageTag: "v1.0.0"
-    ghInstallId: 0
     ghOwner: example-org
     ghRepo: custom-app
     ghBranch: main
@@ -16,7 +15,6 @@ applications:
 
   - name: app2
     imageTag: "v1.0.0"
-    ghInstallId: 0
     ghOwner: example-org
     ghRepo: custom-app
     ghBranch: main
