@@ -21,6 +21,13 @@ spec:
         tasks:
           - name: build
             template: build-container
+          - name: update-config
+            template: update-config
+            dependencies: [build]
+            arguments:
+              parameters:
+                - name: sha
+                  value: "{{`{{workflow.parameters.sha}}`}}"
 
     - name: build-container
       container:
@@ -40,6 +47,35 @@ spec:
                 name: github-secret
                 key: username
           - name: GIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: github-secret
+                key: token
+
+    - name: update-config
+      inputs:
+        parameters:
+          - name: sha
+      container:
+        image: curlimages/curl:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            curl -X POST https://api.github.com/repos/{{$.Values.configRepo.owner}}/{{$.Values.configRepo.name}}/dispatches \
+              -H "Accept: application/vnd.github.v3+json" \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -d '{
+                "event_type": "config-api",
+                "client_payload": {
+                  "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
+                  "action": "apply",
+                  "spec": {
+                    "imagetag": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                  }
+                }
+              }'
+        env:
+          - name: GITHUB_TOKEN
             valueFrom:
               secretKeyRef:
                 name: github-secret
