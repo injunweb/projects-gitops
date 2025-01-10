@@ -26,7 +26,7 @@ spec:
         - push
         - delete
       apiToken:
-        name: github-api-token
+        name: github-secret
         key: token
       insecure: false
       active: true
