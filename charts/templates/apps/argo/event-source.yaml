@@ -19,7 +19,7 @@ spec:
         endpoint: /{{ $.Values.project }}-{{ $app.name }}
         port: "12000"
         method: POST
-        url: http://{{ $app.name }}-github-eventsource-svc.{{ $.Values.project }}.svc.cluster.local
+        url: https://webhook.injunweb.com/{{ $.Values.project }}-{{ $app.name }}
       events:
         - push
       githubApp:
