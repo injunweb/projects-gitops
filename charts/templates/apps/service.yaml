@@ -1,5 +1,5 @@
 {{- range $app := .Values.applications }}
-{{- if $app.imageTag }}
+{{- if $app.tag }}
 ---
 apiVersion: v1
 kind: Service

@@ -1,5 +1,5 @@
 {{- range $app := .Values.applications }}
-{{- if $app.imageTag }}
+{{- if $app.tag }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ $app.name }}
-        image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.imageTag }}
+        image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.tag }}
         ports:
         - containerPort: {{ $app.port }}
         envFrom:
