@@ -1,49 +1,40 @@
 applications:
   - name: app1
-    tag: "v1.0.0"
+    # tag: "asdfasdfasdf"
     ghOwner: example-org
     ghRepo: custom-app
     port: 5000
-    expose:
-      enabled: true
-      primaryDomain: custom.example.com
-      additionalDomains:
-        - custom2.example.com
-      path: /
+    domains:
+      - custom2.example.com
 
-  - name: app2
-    tag: "v1.0.0"
-    ghOwner: example-org
-    ghRepo: custom-app
-    port: 5000
-    expose:
-      enabled: true
-      primaryDomain: custom.example.com
-      additionalDomains:
-        - custom2.example.com
-      path: /
-
-databases:
-  - name: db1
-    type: mysql
-    version: "8.0"
-    port: 3306
-    size: 20Gi
-
-  - name: db2
-    type: postgres
-    version: "14"
-    port: 5432
-    size: 20Gi
-
-  - name: db3
-    type: mongo
-    version: "5.0"
-    port: 27017
-    size: 20Gi
-
-  - name: db4
-    type: redis
-    version: "6.0"
-    port: 6379
-    size: 20Gi
+  # - name: app2
+  #   ghOwner: example-org
+  #   ghRepo: custom-app
+  #   port: 5000
+  #   domains:
+  #     - custom2.example.com
+#
+# databases:
+# - name: db1
+# type: mysql
+# version: "8.0"
+# port: 3306
+# size: 20Gi
+#
+# - name: db2
+# type: postgres
+# version: "14"
+# port: 5432
+# size: 20Gi
+#
+# - name: db3
+# type: mongo
+# version: "5.0"
+# port: 27017
+# size: 20Gi
+#
+# - name: db4
+# type: redis
+# version: "6.0"
+# port: 6379
+# size: 20Gi
