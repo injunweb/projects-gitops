@@ -8,6 +8,13 @@ metadata:
 spec:
   serviceAccountName: {{ $app.name }}-sa
   entrypoint: build
+  arguments:
+    parameters:
+      - name: sha
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: registry-secret
   templates:
     - name: build
       dag:
@@ -21,4 +28,20 @@ spec:
         args:
           - "--dockerfile=Dockerfile"
           - "--context=git://github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{workflow.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+        volumeMounts:
+          - name: docker-config
+            mountPath: /kaniko/.docker
+        env:
+          - name: GIT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: github-secret
+                key: username
+          - name: GIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: github-secret
+                key: token
 {{- end }}

@@ -15,8 +15,8 @@ spec:
   triggers:
     - template:
         name: workflow-trigger
-        argoWorkflow:
-          operation: submit
+        k8s:
+          operation: create
           source:
             resource:
               apiVersion: argoproj.io/v1alpha1
@@ -26,4 +26,8 @@ spec:
               spec:
                 workflowTemplateRef:
                   name: {{ $app.name }}-workflow
+                arguments:
+                  parameters:
+                    - name: sha
+                      value: "{{`{{dependency.github-dep.body.after}}`}}"
 {{- end }}
