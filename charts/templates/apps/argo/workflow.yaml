@@ -61,7 +61,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            curl -X POST https://api.github.com/repos/{{$.Values.configRepo.owner}}/{{$.Values.configRepo.name}}/dispatches \
+            curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -d '{
@@ -70,7 +70,7 @@ spec:
                   "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
                   "action": "apply",
                   "spec": {
-                    "imagetag": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                    "tag": "'"{{`{{inputs.parameters.sha}}`}}"'"
                   }
                 }
               }'
