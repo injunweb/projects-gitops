@@ -6,7 +6,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/your-org/your-repo.git
+        repoURL: https://github.com/injunweb/projects-gitops.git
         revision: HEAD
         files:
           - path: "projects/*.yaml"
@@ -17,7 +17,7 @@ spec:
     spec:
       project: "default"
       source:
-        repoURL: https://github.com/your-org/your-repo.git
+        repoURL: https://github.com/injunweb/projects-gitops.git
         targetRevision: HEAD
         path: charts
         helm:
