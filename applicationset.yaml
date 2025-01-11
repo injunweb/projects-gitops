@@ -27,9 +27,11 @@ spec:
           env:
             # - name: HELM_ARGS
             #   value: -f ../projects/{{.path.filename}} --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
-            - name: HELM_VALUES
-              value: |
-                project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
+            # - name: HELM_VALUES
+            #   value: |
+            #     project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
+            - name: HELM_PATH
+              value: ../projects/{{.path.filename}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
