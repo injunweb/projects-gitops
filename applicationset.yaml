@@ -29,7 +29,7 @@ spec:
               value: |
                 project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
             - name: HELM_FILE_PATH
-              value: ../projects/{{path.filename}}
+              value: ../projects/{{.path.filename}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
