@@ -22,6 +22,8 @@ spec:
         repoURL: https://github.com/injunweb/projects-gitops.git
         targetRevision: HEAD
         path: charts
+        plugin:
+          name: argocd-vault-plugin-helm
         helm:
           valueFiles:
             - ../projects/{{.path.filename}}
