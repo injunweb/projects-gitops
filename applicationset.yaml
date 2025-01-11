@@ -24,11 +24,12 @@ spec:
         path: charts
         plugin:
           name: argocd-vault-plugin-helm
-        helm:
-          valueFiles:
-            - ../projects/{{.path.filename}}
-          values: |
-            project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
+          env:
+            - name: HELM_VALUES
+              value: |
+                project: '{{path.filenameNormalized | trimSuffix ".yaml"}}'
+            - name: HELM_FILE_PATH
+              value: ../projects/{{path.filename}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
