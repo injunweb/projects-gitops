@@ -22,12 +22,12 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - "{{path.path}}"
+            - "{{.path.path}}"
           values: |
             project: "{{path.filename}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{path.basename}}"
+        namespace: '{{path.filenameNormalized | trimSuffix ".yaml"}}'
       syncPolicy:
         automated:
           prune: true
