@@ -24,7 +24,7 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - projects/{{.path.filename}}
+            - ../projects/{{.path.filename}}
           values: |
             project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
       destination:
