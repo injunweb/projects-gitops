@@ -1,7 +1,0 @@
-applications:
-  - name: webapp
-    ghOwner: in-jun
-    ghRepo: commit-canvas
-    port: 8080
-    domains:
-      - commit-canvas.ijw.app
