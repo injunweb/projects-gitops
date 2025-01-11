@@ -6,7 +6,7 @@ metadata:
 spec:
   generators:
     - git:
-        repoURL: https://github.com/injunweb/projects-gitops.git
+        repoURL: https://github.com/your-org/your-repo.git
         revision: HEAD
         files:
           - path: "projects/*.yaml"
@@ -15,14 +15,14 @@ spec:
       name: "{{path.basename}}"
       namespace: argocd
     spec:
-      project: default
+      project: "{{path.basename}}"
       source:
-        repoURL: https://github.com/injunweb/projects-gitops.git
+        repoURL: https://github.com/your-org/your-repo.git
         targetRevision: HEAD
         path: charts
         helm:
           valueFiles:
-            - ../projects/{{path}}.yaml
+            - ../projects/{{path.basename}}.yaml
           values: |
             project: "{{path.basename}}"
       destination:
