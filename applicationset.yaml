@@ -4,6 +4,8 @@ metadata:
   name: microservices
   namespace: argocd
 spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
         repoURL: https://github.com/injunweb/projects-gitops.git
@@ -22,7 +24,7 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - "{{.path.path}}"
+            - "{{path.path}}"
           values: |
             project: "{{path.filename}}"
       destination:
