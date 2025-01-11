@@ -4,6 +4,8 @@ metadata:
   name: microservices
   namespace: argocd
 spec:
+  goTepmlate: true
+  goTemplateOptions: ["missingkey=error"]
   generators:
     - git:
         repoURL: https://github.com/injunweb/projects-gitops.git
@@ -12,7 +14,7 @@ spec:
           - path: "projects/*.yaml"
   template:
     metadata:
-      name: "{{path.filename}}"
+      name: "{{base .path.filename | trimSuffix ".yaml"}}"
       namespace: argocd
     spec:
       project: "default"
@@ -22,12 +24,12 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - "{{path}}"
+            - "{{path.path}}"
           values: |
-            project: "{{path.basename}}"
+            project: "{{base .path.filename | trimSuffix ".yaml"}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{path.filename}}"
+        namespace: "{{base .path.filename | trimSuffix ".yaml"}}"
       syncPolicy:
         automated:
           prune: true
