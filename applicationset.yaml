@@ -27,7 +27,7 @@ spec:
           env:
             - name: HELM_VALUES
               value: |
-                project: '{{path.filenameNormalized | trimSuffix ".yaml"}}'
+                project: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
             - name: HELM_FILE_PATH
               value: ../projects/{{path.filename}}
       destination:
