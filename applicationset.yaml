@@ -14,7 +14,7 @@ spec:
           - path: "projects/*.yaml"
   template:
     metadata:
-      name: "{{path.filename}}"
+      name: "{{.path.filename}}"
       namespace: argocd
     spec:
       project: "default"
@@ -24,12 +24,12 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - "{{path.path}}"
+            - "{{.path.path}}"
           values: |
-            project: "{{path.filename}}"
+            project: "{{.path.filename}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: '{{path.filenameNormalized | trimSuffix ".yaml"}}'
+        namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
       syncPolicy:
         automated:
           prune: true
