@@ -1,0 +1,39 @@
+applications:
+  - name: webapp
+    ghOwner: in-jun
+    ghRepo: commit-canvas
+    port: 8080
+    domains:
+      - commit-canvas.ijw.app
+
+  # - name: app2
+  #   ghOwner: example-org
+  #   ghRepo: custom-app
+  #   port: 5000
+  #   domains:
+  #     - custom2.example.com
+#
+# databases:
+# - name: db1
+# type: mysql
+# version: "8.0"
+# port: 3306
+# size: 20Gi
+#
+# - name: db2
+# type: postgres
+# version: "14"
+# port: 5432
+# size: 20Gi
+#
+# - name: db3
+# type: mongo
+# version: "5.0"
+# port: 27017
+# size: 20Gi
+#
+# - name: db4
+# type: redis
+# version: "6.0"
+# port: 6379
+# size: 20Gi
