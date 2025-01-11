@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/your-org/your-repo.git
         revision: HEAD
         files:
-          - path: "projects/*.yaml"
+          - path: "projects/**"
   template:
     metadata:
       name: "{{path.basename}}"
@@ -22,7 +22,7 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - ../projects/{{path.basename}}.yaml
+            - ../projects/{{path.filename}}.yaml
           values: |
             project: "{{path.basename}}"
       destination:
