@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/your-org/your-repo.git
         revision: HEAD
         files:
-          - path: "projects/*"
+          - path: "projects/*.yaml"
   template:
     metadata:
       name: "{{path.basename}}"
