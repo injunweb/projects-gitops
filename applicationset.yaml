@@ -25,7 +25,7 @@ spec:
         plugin:
           name: argocd-vault-plugin-helm
           env:
-            - name: HELM_ARGS
+            - name: ARGOCD_ENV_HELM_ARGS
               value: >-
                 -f ../projects/{{.path.filename}}
                 --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
