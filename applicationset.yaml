@@ -33,7 +33,7 @@ spec:
             # - name: HELM_PATH
             #   value: commitcanvas.yaml
             - name: HELM_ARGS
-              value: "-f commitcanvas.yaml"
+              value: --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
