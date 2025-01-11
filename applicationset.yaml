@@ -26,7 +26,7 @@ spec:
           name: argocd-vault-plugin-helm
           env:
             - name: ARGOCD_ENV_HELM_ARGS
-              value: -f ../projects/{{.path.filename}} --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
+              value: --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
