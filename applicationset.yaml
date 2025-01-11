@@ -12,8 +12,8 @@ spec:
           - path: "projects/*.yaml"
   template:
     metadata:
-      # 파일 이름만 추출
-      name: "{{`{{basename path}}`}}"
+      name: "{{path.basename}}"
+      namespace: argocd
     spec:
       project: default
       source:
@@ -22,13 +22,15 @@ spec:
         path: charts
         helm:
           valueFiles:
-            - ../projects/{{`{{basename path}}`}}
+            - ../projects/{{path.basename}}.yaml
           values: |
-            project: "{{`{{basename path}}`}}"
+            project: "{{path.basename}}"
       destination:
         server: https://kubernetes.default.svc
-        namespace: "{{`{{basename path}}`}}"
+        namespace: "{{path.basename}}"
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
