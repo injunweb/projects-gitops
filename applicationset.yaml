@@ -15,7 +15,7 @@ spec:
       name: "{{path.basename}}"
       namespace: argocd
     spec:
-      project: "{{path.basename}}"
+      project: "default"
       source:
         repoURL: https://github.com/your-org/your-repo.git
         targetRevision: HEAD
