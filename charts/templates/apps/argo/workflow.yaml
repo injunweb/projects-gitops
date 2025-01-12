@@ -76,6 +76,7 @@ spec:
          - name: sha
      container:
        image: alpine:latest
+       workingDir: /workspace
        command: ["/bin/sh", "-c"]
        args:
          - |
