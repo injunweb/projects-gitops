@@ -23,7 +23,7 @@ spec:
         endpoint: /{{ $.Values.project }}-{{ $app.name }}
         port: "12000"
         method: POST
-        url: https://webhook.injunweb.com/{{ $.Values.project }}-{{ $app.name }}
+        url: https://webhook.injunweb.com
       events:
         - push
         - delete
