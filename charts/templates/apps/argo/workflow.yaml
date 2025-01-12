@@ -52,12 +52,15 @@ spec:
         args:
           - |
             git config --global core.compression 0 &&
+            git config --global core.fsmonitor false &&
             git config --global http.postBuffer 524288000 &&
             git -c protocol.version=2 clone --depth=1 --single-branch \
             --no-tags --shallow-submodules \
             --filter=blob:none \
+            --config=core.fsmonitor=false \
             https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
-            git rev-parse HEAD > sha.txt
+            git rev-parse HEAD > sha.txt &&
+            git config --global --unset core.fsmonitor
         env:
           - name: GIT_USERNAME
             valueFrom:
