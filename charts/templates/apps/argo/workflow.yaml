@@ -8,45 +8,52 @@ metadata:
 spec:
   serviceAccountName: argo-events-sa
   entrypoint: build
-  arguments:
-    parameters:
-      - name: sha
   volumes:
     - name: docker-config
       secret:
         secretName: registry-secret
+    - name: workspace
+      emptyDir: {}
   templates:
     - name: build
       dag:
         tasks:
+          - name: clone
+            template: git-clone
           - name: build
             template: build-container
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{workflow.parameters.sha}}`}}"
+                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
+            dependencies: [clone]
           - name: update-config
             template: update-config
             dependencies: [build]
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{workflow.parameters.sha}}`}}"
+                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
 
-    - name: build-container
-      inputs:
+    - name: git-clone
+      outputs:
         parameters:
           - name: sha
+            valueFrom:
+              path: /workspace/sha.txt
       container:
-        image: gcr.io/kaniko-project/executor:latest
+        image: alpine/git:latest
+        command: [sh, -c]
         args:
-          - "--dockerfile=Dockerfile"
-          - "--context=git://github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
-        volumeMounts:
-          - name: docker-config
-            mountPath: /kaniko/.docker
+          - |
+            git config --global core.compression 0 &&
+            git config --global http.postBuffer 524288000 &&
+            git -c protocol.version=2 clone --depth=1 --single-branch \
+            --no-tags --shallow-submodules \
+            --filter=blob:none \
+            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git /workspace &&
+            cd /workspace &&
+            git rev-parse HEAD > /workspace/sha.txt
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -58,6 +65,26 @@ spec:
               secretKeyRef:
                 name: github-secret
                 key: token
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: build-container
+      inputs:
+        parameters:
+          - name: sha
+      container:
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+          - "--dockerfile=/workspace/Dockerfile"
+          - "--context=/workspace"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+        volumeMounts:
+          - name: docker-config
+            mountPath: /kaniko/.docker
+          - name: workspace
+            mountPath: /workspace
 
     - name: update-config
       inputs:

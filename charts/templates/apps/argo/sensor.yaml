@@ -26,8 +26,4 @@ spec:
               spec:
                 workflowTemplateRef:
                   name: {{ $.Values.project }}-{{ $app.name }}-workflow
-                arguments:
-                  parameters:
-                    - name: sha
-                      value: "{{`{{dependency.github-dep.body.after}}`}}"
 {{- end }}
