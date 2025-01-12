@@ -3,116 +3,123 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-workflow
-  namespace: {{ $.Values.project }}
+ name: {{ $.Values.project }}-{{ $app.name }}-workflow
+ namespace: {{ $.Values.project }}
 spec:
-  serviceAccountName: argo-events-sa
-  entrypoint: build
-  volumes:
-    - name: docker-config
-      secret:
-        secretName: registry-secret
-    - name: workspace
-      emptyDir: {}
-  templates:
-    - name: build
-      dag:
-        tasks:
-          - name: clone
-            template: git-clone
-          - name: build
-            template: build-container
-            arguments:
-              parameters:
-                - name: sha
-                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
-            dependencies: [clone]
-          - name: update-config
-            template: update-config
-            dependencies: [build]
-            arguments:
-              parameters:
-                - name: sha
-                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
+ serviceAccountName: argo-events-sa
+ entrypoint: build
+ volumes:
+   - name: docker-config
+     secret:
+       secretName: registry-secret
+   - name: workspace
+     emptyDir: {}
+ templates:
+   - name: build
+     dag:
+       tasks:
+         - name: clone
+           template: git-clone
+         - name: build
+           template: build-container
+           arguments:
+             parameters:
+               - name: sha
+                 value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
+           dependencies: [clone]
+         - name: update-config
+           template: update-config
+           dependencies: [build]
+           arguments:
+             parameters:
+               - name: sha
+                 value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
 
-    - name: git-clone
-      outputs:
-        parameters:
-          - name: sha
-            valueFrom:
-              path: /workspace/sha.txt
-      container:
-        image: alpine/git:latest
-        workingDir: /workspace
-        command: [sh, -c]
-        args:
-          - |
-            git config --global core.compression 0 &&
-            git config --global http.postBuffer 524288000 &&
-            git -c protocol.version=2 clone --depth=1 --single-branch \
-            --no-tags --shallow-submodules \
-            --filter=blob:none \
-            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
-            git rev-parse HEAD > sha.txt && ls -la
-        env:
-          - name: GIT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: github-secret
-                key: username
-          - name: GIT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: github-secret
-                key: token
-        volumeMounts:
-          - name: workspace
-            mountPath: /workspace
+   - name: git-clone
+     outputs:
+       parameters:
+         - name: sha
+           valueFrom:
+             path: /workspace/sha.txt
+     container:
+       image: alpine/git:latest
+       workingDir: /workspace
+       command: [sh, -c]
+       args:
+         - |
+           git config --global core.compression 0 &&
+           git config --global http.postBuffer 524288000 &&
+           git -c protocol.version=2 clone --depth=1 --single-branch \
+           --no-tags --shallow-submodules \
+           --filter=blob:none \
+           https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
+           git rev-parse HEAD > sha.txt &&
+           ls -la
+       env:
+         - name: GIT_USERNAME
+           valueFrom:
+             secretKeyRef:
+               name: github-secret
+               key: username
+         - name: GIT_PASSWORD
+           valueFrom:
+             secretKeyRef:
+               name: github-secret
+               key: token
+       volumeMounts:
+         - name: workspace
+           mountPath: /workspace
 
-    - name: build-container
-      inputs:
-        parameters:
-          - name: sha
-      container:
-        image: gcr.io/kaniko-project/executor:latest
-        workingDir: /workspace
-        args:
-          - "--context=."
-          - "--dockerfile=./Dockerfile"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
-        volumeMounts:
-          - name: docker-config
-            mountPath: /kaniko/.docker
-          - name: workspace
-            mountPath: /workspace
+   - name: build-container
+     inputs:
+       parameters:
+         - name: sha
+     container:
+       image: gcr.io/kaniko-project/executor:latest
+       command: ["/bin/sh", "-c"]
+       args:
+         - |
+           echo "Current directory:" &&
+           pwd &&
+           echo "Directory contents:" &&
+           ls -la &&
+           /kaniko/executor \
+           --context=/workspace \
+           --dockerfile=/workspace/Dockerfile \
+           --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}} \
+           --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest
+       volumeMounts:
+         - name: docker-config
+           mountPath: /kaniko/.docker
+         - name: workspace
+           mountPath: /workspace
 
-    - name: update-config
-      inputs:
-        parameters:
-          - name: sha
-      container:
-        image: curlimages/curl:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -d '{
-                "event_type": "config-api",
-                "client_payload": {
-                  "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
-                  "action": "apply",
-                  "spec": {
-                    "tag": "'"{{`{{inputs.parameters.sha}}`}}"'"
-                  }
-                }
-              }'
-        env:
-          - name: GITHUB_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: github-secret
-                key: token
+   - name: update-config
+     inputs:
+       parameters:
+         - name: sha
+     container:
+       image: curlimages/curl:latest
+       command: ["/bin/sh", "-c"]
+       args:
+         - |
+           curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
+             -H "Accept: application/vnd.github.v3+json" \
+             -H "Authorization: Bearer $GITHUB_TOKEN" \
+             -d '{
+               "event_type": "config-api",
+               "client_payload": {
+                 "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
+                 "action": "apply",
+                 "spec": {
+                   "tag": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                 }
+               }
+             }'
+       env:
+         - name: GITHUB_TOKEN
+           valueFrom:
+             secretKeyRef:
+               name: github-secret
+               key: token
 {{- end }}
