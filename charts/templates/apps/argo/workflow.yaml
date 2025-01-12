@@ -53,7 +53,7 @@ spec:
             --no-tags --shallow-submodules \
             --filter=blob:none \
             https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
-            git rev-parse HEAD > sha.txt
+            git rev-parse HEAD > sha.txt && ls -la
         env:
           - name: GIT_USERNAME
             valueFrom:
