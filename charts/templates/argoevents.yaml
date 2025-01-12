@@ -37,5 +37,5 @@ spec:
   nats:
     native:
       auth: none
-      replicas: 2
+      replicas: 3
       antiAffinity: false
