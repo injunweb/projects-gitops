@@ -21,6 +21,10 @@ spec:
         tasks:
           - name: build
             template: build-container
+            arguments:
+              parameters:
+                - name: sha
+                  value: "{{`{{workflow.parameters.sha}}`}}"
           - name: update-config
             template: update-config
             dependencies: [build]
@@ -30,12 +34,15 @@ spec:
                   value: "{{`{{workflow.parameters.sha}}`}}"
 
     - name: build-container
+      inputs:
+        parameters:
+          - name: sha
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
           - "--dockerfile=Dockerfile"
           - "--context=git://github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{workflow.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
