@@ -76,8 +76,8 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
-          - "--dockerfile=/workspace/Dockerfile"
           - "--context=/workspace"
+          - "--dockerfile=Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
