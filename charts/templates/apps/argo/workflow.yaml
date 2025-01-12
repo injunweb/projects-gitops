@@ -47,6 +47,8 @@ spec:
        command: [sh, -c]
        args:
          - |
+           echo "Before clone - workspace contents:" &&
+           ls -la /workspace &&
            git config --global core.compression 0 &&
            git config --global http.postBuffer 524288000 &&
            git -c protocol.version=2 clone --depth=1 --single-branch \
@@ -54,7 +56,10 @@ spec:
            --filter=blob:none \
            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
            git rev-parse HEAD > sha.txt &&
-           ls -la
+           echo "After clone - workspace contents:" &&
+           ls -la /workspace &&
+           echo "Files are in workspace:" &&
+           find /workspace -type f
        env:
          - name: GIT_USERNAME
            valueFrom:
