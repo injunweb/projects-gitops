@@ -76,18 +76,12 @@ spec:
          - name: sha
      container:
        image: gcr.io/kaniko-project/executor:latest
-       command: ["/bin/sh", "-c"]
        args:
-         - |
-           echo "Current directory:" &&
-           pwd &&
-           echo "Directory contents:" &&
-           ls -la &&
-           /kaniko/executor \
-           --context=/workspace \
-           --dockerfile=/workspace/Dockerfile \
-           --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}} \
-           --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest
+         - "--verbosity=debug"
+         - "--context=/workspace"
+         - "--dockerfile=/workspace/Dockerfile"
+         - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+         - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
        volumeMounts:
          - name: docker-config
            mountPath: /kaniko/.docker
