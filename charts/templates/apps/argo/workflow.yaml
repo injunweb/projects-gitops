@@ -12,8 +12,6 @@ spec:
     - name: docker-config
       secret:
         secretName: registry-secret
-    - name: workspace
-      emptyDir: {}
   templates:
     - name: build
       dag:
@@ -26,6 +24,9 @@ spec:
               parameters:
                 - name: sha
                   value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
+              artifacts:
+                - name: workspace
+                  from: "{{`{{tasks.clone.outputs.artifacts.workspace}}`}}"
             dependencies: [clone]
           - name: update-config
             template: update-config
@@ -41,6 +42,9 @@ spec:
           - name: sha
             valueFrom:
               path: /workspace/sha.txt
+        artifacts:
+          - name: workspace
+            path: /workspace
       container:
         image: alpine/git:latest
         command: [sh, -c]
@@ -73,6 +77,9 @@ spec:
       inputs:
         parameters:
           - name: sha
+        artifacts:
+          - name: workspace
+            path: /workspace
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
@@ -83,8 +90,6 @@ spec:
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
-          - name: workspace
-            mountPath: /workspace
 
     - name: update-config
       inputs:
