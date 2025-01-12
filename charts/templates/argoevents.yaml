@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-events-sa
+  namespace: { { $.Values.project } }
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-events-role
+  namespace: { { $.Values.project } }
+rules:
+  - apiGroups: ["argoproj.io"]
+    resources: ["workflows", "workflowtemplates"]
+    verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-events-rolebinding
+  namespace: { { $.Values.project } }
+subjects:
+  - kind: ServiceAccount
+    name: argo-events-sa
+    namespace: { { $.Values.project } }
+roleRef:
+  kind: Role
+  name: argo-events-role
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: EventBus
+metadata:
+  name: default
+  namespace: { { $.Values.project } }
+spec:
+  nats:
+    native:
+      auth: none
+      replicas: 3
+      antiAffinity: false

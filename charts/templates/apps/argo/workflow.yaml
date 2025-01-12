@@ -3,10 +3,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ $app.name }}-workflow
+  name: {{ $.Values.project }}-{{ $app.name }}-workflow
   namespace: {{ $.Values.project }}
 spec:
-  serviceAccountName: {{ $app.name }}-sa
+  serviceAccountName: argo-events-sa
   entrypoint: build
   arguments:
     parameters:

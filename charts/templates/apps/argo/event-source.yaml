@@ -3,9 +3,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: {{ $app.name }}-github
+  name: {{ $.Values.project }}-{{ $app.name }}-github
   namespace: {{ $.Values.project }}
 spec:
+  template:
+    serviceAccountName: argo-events-sa
   service:
     ports:
       - port: 12000

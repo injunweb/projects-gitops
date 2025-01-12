@@ -3,7 +3,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ $app.name }}-webhook
+  name: {{ $.Values.project }}-{{ $app.name }}-webhook
   namespace: {{ $.Values.project }}
 spec:
   entryPoints:
@@ -13,6 +13,6 @@ spec:
     - match: Host(`webhook.injunweb.com`) && PathPrefix(`/{{ $.Values.project }}-{{ $app.name }}`)
       kind: Rule
       services:
-        - name: {{ $app.name }}-github
+        - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-svc
           port: 12000
 {{- end }}
