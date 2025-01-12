@@ -12,6 +12,8 @@ spec:
     - name: docker-config
       secret:
         secretName: registry-secret
+    - name: workspace
+      emptyDir: {}
   templates:
     - name: build
       dag:
@@ -47,17 +49,21 @@ spec:
             path: /workspace
       container:
         image: alpine/git:latest
-        workingDir: /workspace
         command: [sh, -c]
         args:
           - |
+            mkdir -p /workspace &&
+            echo "Starting clone process..." &&
             git config --global core.compression 0 &&
             git config --global http.postBuffer 524288000 &&
             git -c protocol.version=2 clone --depth=1 --single-branch \
             --no-tags --shallow-submodules \
             --filter=blob:none \
-            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
-            git rev-parse HEAD > sha.txt
+            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git /workspace &&
+            cd /workspace &&
+            ls -la &&
+            git rev-parse HEAD > /workspace/sha.txt &&
+            echo "Clone completed successfully"
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -69,6 +75,9 @@ spec:
               secretKeyRef:
                 name: github-secret
                 key: token
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
 
     - name: build-container
       inputs:
@@ -79,16 +88,17 @@ spec:
             path: /workspace
       container:
         image: gcr.io/kaniko-project/executor:latest
-        workingDir: /workspace
         args:
-          - "--context=."
-          - "--dockerfile=./Dockerfile"
+          - "--context=/workspace"
+          - "--dockerfile=Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
-
+          - name: workspace
+            mountPath: /workspace
+ 
     - name: update-config
       inputs:
         parameters:
