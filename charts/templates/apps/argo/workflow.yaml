@@ -14,7 +14,7 @@ spec:
         secretName: registry-secret
     - name: workspace
       persistentVolumeClaim:
-        claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc  # 각 앱별 PVC 사용
+        claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
   templates:
     - name: build
       dag:
@@ -44,7 +44,6 @@ spec:
               path: /workspace/sha.txt
       container:
         image: alpine/git:latest
-        workingDir: /workspace
         command: [sh, -c]
         args:
           - |
@@ -83,7 +82,6 @@ spec:
           - name: sha
       container:
         image: gcr.io/kaniko-project/executor:latest
-        workingDir: /workspace
         args:
           - "--context=/workspace"
           - "--dockerfile=/workspace/Dockerfile"
