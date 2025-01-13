@@ -88,6 +88,10 @@ spec:
       inputs:
         parameters:
           - name: sha
+      hostAliases:
+        - ip: "192.168.0.200"
+          hostnames:
+            - "harbor.injunweb.com"
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
@@ -95,10 +99,6 @@ spec:
           - "--dockerfile=/workspace/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
-        hostAliases:
-          - ip: "192.168.0.200"
-            hostnames:
-              - "harbor.injunweb.com"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
