@@ -54,7 +54,7 @@ spec:
             --no-tags --shallow-submodules \
             --filter=blob:none \
             https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . && \
-            git rev-parse HEAD > /workspace/sha.txt
+            git rev-parse HEAD > /workspace/sha.txt && ls -la && pwd
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -81,6 +81,8 @@ spec:
           - |
             echo "Contents of /workspace:" &&
             ls -la /workspace &&
+            echo "Contents of /:" &&
+            ls -la / &&
             cat /workspace/Dockerfile
         volumeMounts:
           - name: workspace
