@@ -79,9 +79,9 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "Contents of /workspace/src:" &&
-            ls -la /workspace/src &&
-            cat /workspace/src/Dockerfile
+            echo "Contents of /workspace:" &&
+            ls -la /workspace &&
+            cat /workspace/Dockerfile
         volumeMounts:
           - name: workspace
             mountPath: /workspace
