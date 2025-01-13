@@ -1,5 +1,17 @@
 {{- range $app := .Values.applications }}
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
+  namespace: {{ $.Values.project }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
@@ -14,7 +26,7 @@ spec:
         secretName: registry-secret
     - name: workspace
       persistentVolumeClaim:
-        claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
+        claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc  # 각 앱별 PVC 사용
   templates:
     - name: build
       dag:
@@ -44,18 +56,24 @@ spec:
               path: /workspace/sha.txt
       container:
         image: alpine/git:latest
+        workingDir: /workspace
         command: [sh, -c]
         args:
           - |
-            pwd && ls -la && \
-            mkdir -p /workspace && \
-            git config --global core.compression 0 && \
-            git config --global http.postBuffer 524288000 && \
-            git -c protocol.version=2 clone --depth=1 --single-branch \
-            --no-tags --shallow-submodules \
-            --filter=blob:none \
-            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . && \
-            git rev-parse HEAD > /workspace/sha.txt && ls -la && pwd
+            if [ -d ".git" ]; then
+              echo "Git repository exists, pulling changes..."
+              git pull
+            else
+              echo "Cloning new repository..."
+              git config --global core.compression 0 &&
+              git config --global http.postBuffer 524288000 &&
+              git -c protocol.version=2 clone --depth=1 --single-branch \
+              --no-tags --shallow-submodules \
+              --filter=blob:none \
+              https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git .
+            fi &&
+            git rev-parse HEAD > sha.txt &&
+            ls -la
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -76,18 +94,16 @@ spec:
         parameters:
           - name: sha
       container:
-        image: alpine:latest
-        command: ["/bin/sh", "-c"]
+        image: gcr.io/kaniko-project/executor:latest
+        workingDir: /workspace
         args:
-          - |
-            echo "Contents of /workspace:" &&
-            ls -la /workspace &&
-            echo "Contents of /:" &&
-            ls -la / &&
-            pwd &&
-            ls -la &&
-            cat /workspace/git/Dockerfile
+          - "--context=/workspace"
+          - "--dockerfile=/workspace/Dockerfile"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
+          - name: docker-config
+            mountPath: /kaniko/.docker
           - name: workspace
             mountPath: /workspace
 
