@@ -41,10 +41,10 @@ spec:
         parameters:
           - name: sha
             valueFrom:
-              path: /workspace/sha.txt
+              path: /sha.txt
       container:
         image: alpine/git:latest
-        workingDir: /workspace
+        workingDir: /
         command: [sh, -c]
         args:
           - |
@@ -68,7 +68,7 @@ spec:
                 key: token
         volumeMounts:
           - name: workspace
-            mountPath: /workspace
+            mountPath: /
 
     - name: build-container
       inputs:
@@ -76,17 +76,17 @@ spec:
           - name: sha
       container:
         image: gcr.io/kaniko-project/executor:latest
-        workingDir: /workspace
+        workingDir: /
         args:
-          - "--context=/workspace"
-          - "--dockerfile=/workspace/Dockerfile"
+          - "--context=/"
+          - "--dockerfile=/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
           - name: workspace
-            mountPath: /workspace
+            mountPath: /
 
     - name: update-config
       inputs:
