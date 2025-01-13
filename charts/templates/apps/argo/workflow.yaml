@@ -85,7 +85,8 @@ spec:
             echo "Contents of /:" &&
             ls -la / &&
             pwd &&
-            cat /workspace/Dockerfile
+            ls -la &&
+            cat /workspace/git/Dockerfile
         volumeMounts:
           - name: workspace
             mountPath: /workspace
