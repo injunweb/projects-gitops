@@ -53,7 +53,7 @@ spec:
             git -c protocol.version=2 clone --depth=1 --single-branch \
             --no-tags --shallow-submodules \
             --filter=blob:none \
-            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git asdf && \
+            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git git && \
             git rev-parse HEAD > /workspace/sha.txt && ls -la && pwd
         env:
           - name: GIT_USERNAME
