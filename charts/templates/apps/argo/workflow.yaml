@@ -41,20 +41,20 @@ spec:
         parameters:
           - name: sha
             valueFrom:
-              path: /sha.txt
+              path: /workspace/sha.txt
       container:
         image: alpine/git:latest
-        workingDir: /
         command: [sh, -c]
         args:
           - |
-            git config --global core.compression 0 &&
-            git config --global http.postBuffer 524288000 &&
+            mkdir -p /workspace && \
+            git config --global core.compression 0 && \
+            git config --global http.postBuffer 524288000 && \
             git -c protocol.version=2 clone --depth=1 --single-branch \
             --no-tags --shallow-submodules \
             --filter=blob:none \
-            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . &&
-            git rev-parse HEAD > sha.txt &&
+            https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git . && \
+            git rev-parse HEAD > /workspace/sha.txt
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -68,7 +68,7 @@ spec:
                 key: token
         volumeMounts:
           - name: workspace
-            mountPath: /
+            mountPath: /workspace
 
     - name: build-container
       inputs:
@@ -76,17 +76,16 @@ spec:
           - name: sha
       container:
         image: gcr.io/kaniko-project/executor:latest
-        workingDir: /
         args:
-          - "--context=/"
-          - "--dockerfile=/Dockerfile"
+          - "--context=/workspace"
+          - "--dockerfile=/workspace/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
           - name: workspace
-            mountPath: /
+            mountPath: /workspace
 
     - name: update-config
       inputs:
