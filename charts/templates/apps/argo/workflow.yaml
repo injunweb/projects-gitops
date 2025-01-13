@@ -75,15 +75,14 @@ spec:
         parameters:
           - name: sha
       container:
-        image: gcr.io/kaniko-project/executor:latest
+        image: alpine:latest
+        command: ["/bin/sh", "-c"]
         args:
-          - "--context=/workspace"
-          - "--dockerfile=/workspace/Dockerfile"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+          - |
+            echo "Contents of /workspace/src:" &&
+            ls -la /workspace/src &&
+            cat /workspace/src/Dockerfile
         volumeMounts:
-          - name: docker-config
-            mountPath: /kaniko/.docker
           - name: workspace
             mountPath: /workspace
 
