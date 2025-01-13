@@ -1,0 +1,14 @@
+{{ - range $app := .Values.applications }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
+  namespace: {{ $.Values.project }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+{{ - end }}
