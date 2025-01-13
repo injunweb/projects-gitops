@@ -95,6 +95,10 @@ spec:
           - "--dockerfile=/workspace/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+        hostAliases:
+          - ip: "192.168.0.200"
+            hostnames:
+              - "harbor.injunweb.com"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker
