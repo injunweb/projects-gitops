@@ -47,11 +47,19 @@ spec:
         command: [sh, -c]
         args:
           - |
-            if [ -d ".git" ]; then
+            echo "Current directory:"
+            pwd
+            echo "Directory contents:"
+            ls -la /workspace
+            if [ -d "/workspace/.git" ]; then
               echo "Git repository exists, pulling changes..."
+              cd /workspace
+              git fetch
+              git reset --hard origin/main
               git pull
             else
               echo "Cloning new repository..."
+              cd /workspace
               git config --global core.compression 0 &&
               git config --global http.postBuffer 524288000 &&
               git -c protocol.version=2 clone --depth=1 --single-branch \
