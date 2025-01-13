@@ -1,17 +1,5 @@
 {{- range $app := .Values.applications }}
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
-  namespace: {{ $.Values.project }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
----
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
