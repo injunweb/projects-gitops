@@ -83,6 +83,7 @@ spec:
             ls -la /workspace &&
             echo "Contents of /:" &&
             ls -la / &&
+            pwd &&
             cat /workspace/Dockerfile
         volumeMounts:
           - name: workspace
