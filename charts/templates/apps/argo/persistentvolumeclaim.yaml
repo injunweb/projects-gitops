@@ -1,4 +1,4 @@
-{{ - range $app := .Values.applications }}
+{{- range $app := .Values.applications }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -11,4 +11,4 @@ spec:
   resources:
     requests:
       storage: 1Gi
-{{ - end }}
+{{- end }}
