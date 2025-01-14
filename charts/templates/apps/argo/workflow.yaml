@@ -125,9 +125,9 @@ spec:
                 "client_payload": {
                   "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
                   "action": "apply",
-                  "spec": "{
+                  "spec": {
                     "tag": "'"{{`{{inputs.parameters.sha}}`}}"'"
-                  }"
+                  }
                 }
               }'
         env:

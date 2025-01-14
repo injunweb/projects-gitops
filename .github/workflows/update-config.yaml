@@ -20,15 +20,15 @@ jobs:
 
       - name: Process Request
         run: |
-          PATH_PARAMS=${{ github.event.client_payload.path }}
-          ACTION=${{ github.event.client_payload.action }}
-          SPEC=${{ toJson(github.event.client_payload.spec) }}
+          PATH_PARAMS="${{ github.event.client_payload.path }}"
+          ACTION="${{ github.event.client_payload.action }}"
+          SPEC='${{ toJson(github.event.client_payload.spec) }}'
 
           IFS='/' read -r -a PATH_ARRAY <<< "$PATH_PARAMS"
-          RESOURCE_TYPE="${PATH_ARRAY[0]}"    # projects
-          PROJECT="${PATH_ARRAY[1]}"          # myproject
-          SUB_RESOURCE="${PATH_ARRAY[2]}"     # applications/databases
-          NAME="${PATH_ARRAY[3]}"             # myapp/mydb
+          RESOURCE_TYPE="${PATH_ARRAY[0]}"
+          PROJECT="${PATH_ARRAY[1]}"
+          SUB_RESOURCE="${PATH_ARRAY[2]}"
+          NAME="${PATH_ARRAY[3]}"
 
           FILE="projects/$PROJECT.yaml"
 
@@ -42,9 +42,9 @@ jobs:
 
               if [ -f "$FILE" ]; then
                 if [ "$SUB_RESOURCE" = "applications" ]; then
-                  yq eval "(.applications[] | select(.name == \"$NAME\")) *= $SPEC" -i $FILE
+                  yq eval "(.applications[] | select(.name == \"$NAME\")) *= ${SPEC}" -i $FILE
                 elif [ "$SUB_RESOURCE" = "databases" ]; then
-                  yq eval "(.databases[] | select(.name == \"$NAME\")) *= $SPEC" -i $FILE
+                  yq eval "(.databases[] | select(.name == \"$NAME\")) *= ${SPEC}" -i $FILE
                 fi
               fi
               ;;
