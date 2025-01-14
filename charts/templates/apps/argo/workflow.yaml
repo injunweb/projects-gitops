@@ -101,7 +101,7 @@ spec:
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
-            mountPath: /kaniko/.docker
+            mountPath: /kaniko/.docker/
           - name: workspace
             mountPath: /workspace
 
