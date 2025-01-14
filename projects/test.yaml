@@ -5,14 +5,13 @@ applications:
     port: 8080
     domains:
       - test.ijw.app
-    tag: ec410158d46022d0e8457b61ac8d69af1552604b
+    tag: 2a29bec1f48a621f5f557718836ecad3a45bcdfc
 # - name: app2
 #   ghOwner: example-org
 #   ghRepo: custom-app
 #   port: 5000
 #   domains:
 #     - custom2.example.com
-
 #
 # databases:
 # - name: db1
