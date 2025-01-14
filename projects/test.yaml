@@ -2,7 +2,7 @@ applications:
   - name: helloworld
     ghOwner: in-jun
     ghRepo: test
-    port: 8000
+    port: 8080
     domains:
       - test.ijw.app
     tag: ec410158d46022d0e8457b61ac8d69af1552604b
