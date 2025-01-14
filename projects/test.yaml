@@ -2,16 +2,17 @@ applications:
   - name: helloworld
     ghOwner: in-jun
     ghRepo: test
-    port: 8080
+    port: 8000
     domains:
       - test.ijw.app
-      # - name: app2
-      #   ghOwner: example-org
-      #   ghRepo: custom-app
-      #   port: 5000
-      #   domains:
-      #     - custom2.example.com
     tag: ec410158d46022d0e8457b61ac8d69af1552604b
+# - name: app2
+#   ghOwner: example-org
+#   ghRepo: custom-app
+#   port: 5000
+#   domains:
+#     - custom2.example.com
+
 #
 # databases:
 # - name: db1
