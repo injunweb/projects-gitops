@@ -12,6 +12,9 @@ spec:
     - name: docker-config
       secret:
         secretName: registry-secret
+        items:
+          - key: .dockerconfigjson
+            path: config.json
     - name: workspace
       persistentVolumeClaim:
         claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
