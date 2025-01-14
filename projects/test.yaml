@@ -13,12 +13,12 @@ applications:
 #   domains:
 #     - custom2.example.com
 #
-# databases:
-# - name: db1
-# type: mysql
-# version: "8.0"
-# port: 3306
-# size: 20Gi
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
 #
 # - name: db2
 # type: postgres
