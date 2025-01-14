@@ -18,7 +18,7 @@ databases:
     type: mysql
     version: "8.0"
     port: 3306
-    size: 1Gi
+    size: 2Gi
 #
 # - name: db2
 # type: postgres
