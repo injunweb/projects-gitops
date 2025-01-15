@@ -5,7 +5,7 @@ applications:
     port: 8000
     domains:
       - test.ijw.app
-    tag: a538b2d232950733da7927b220302328ce1f5bb7
+    tag: 2fe4683e1536dad85b76eea19d161ca9aeccef1a
 # - name: app2
 #   ghOwner: example-org
 #   ghRepo: custom-app
