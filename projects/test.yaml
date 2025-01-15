@@ -32,8 +32,8 @@ databases:
   #  port: 27017
   #  size: 20Gi
   #
-  - name: db4
-    type: redis
-    version: "6.0"
-    port: 6379
-    size: 20Gi
+  # - name: db4
+  #   type: redis
+  #   version: "6.0"
+  #   port: 6379
+  #   size: 20Gi
