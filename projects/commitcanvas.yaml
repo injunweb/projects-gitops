@@ -5,4 +5,3 @@ applications:
     port: 8080
     domains:
       - commit-canvas.ijw.app
-    tag: a3cd31c46ca3dfe6f918d81b494bbf3e6ffa7cc9
