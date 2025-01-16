@@ -1,39 +1,39 @@
 applications:
-  - name: helloworld
+  - name: app1
     ghOwner: in-jun
     ghRepo: test
     port: 8000
     domains:
-      - test.ijw.app
-    tag: 2fe4683e1536dad85b76eea19d161ca9aeccef1a
-# - name: app2
-#   ghOwner: example-org
-#   ghRepo: custom-app
-#   port: 5000
-#   domains:
-#     - custom2.example.com
-#
+      - custom1.example.com
+
+  - name: app2
+    ghOwner: example-org
+    ghRepo: custom-app
+    port: 5000
+    domains:
+      - custom2.example.com
+
 databases:
   - name: mysql
     type: mysql
     version: "8.0"
     port: 3306
     size: 2Gi
-  #
-  # - name: db2
-  #  type: postgres
-  #  version: "14"
-  #  port: 5432
-  #  size: 20Gi
-  #
-  # - name: db3
-  #  type: mongo
-  #  version: "5.0"
-  #  port: 27017
-  #  size: 20Gi
-  #
-  # - name: db4
-  #   type: redis
-  #   version: "6.0"
-  #   port: 6379
-  #   size: 20Gi
+
+  - name: db2
+    type: postgres
+    version: "14"
+    port: 5432
+    size: 20Gi
+
+  - name: db3
+    type: mongo
+    version: "5.0"
+    port: 27017
+    size: 20Gi
+
+  - name: db4
+    type: redis
+    version: "6.0"
+    port: 6379
+    size: 20Gi
