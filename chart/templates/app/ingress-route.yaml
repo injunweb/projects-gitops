@@ -12,7 +12,7 @@ spec:
     - web
     - websecure
   routes:
-    - match: Host(\`{{ $domain }}\`) 
+    - match: Host(`{{ $domain }}`) 
       kind: Rule
       services:
         - name: {{ $app.name }}
