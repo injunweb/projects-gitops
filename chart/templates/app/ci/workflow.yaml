@@ -50,28 +50,28 @@ spec:
         command: [sh, -c]
         args:
           - |
-            echo "Moving to workspace directory..."
-            cd /workspace
-            echo "Current directory: $(pwd)"
-            echo "Directory contents before clone:"
+            echo "[GIT] Starting git process..."
+            mkdir -p /workspace/source
+            cd /workspace/source
+            echo "[GIT] Current source directory contents:"
             ls -la
             if [ -d ".git" ]; then
-              echo "Git repository exists, pulling changes..."
-              git pull
+              echo "[GIT] Repository exists, fetching updates..."
+              git fetch origin HEAD
+              git reset --hard FETCH_HEAD
             else
-              echo "Clearing workspace directory..."
-              rm -rf ./* ./.[!.]* 2>/dev/null || true
-              echo "Cloning new repository..."
-              git config --global core.compression 0 &&
-              git config --global http.postBuffer 524288000 &&
-              git -c protocol.version=2 clone --depth=1 --single-branch \
-              --no-tags --shallow-submodules \
-              --filter=blob:none \
-              https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git .
-            fi &&
-            echo "Directory contents after clone/pull:"
-            ls -la &&
-            git rev-parse HEAD > sha.txt
+              echo "[GIT] Clean clone required..."
+              rm -rf * .[!.]* 2>/dev/null || true
+              git clone --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git .
+            fi
+            echo "[GIT] Repository contents after clone/update:"
+            ls -la
+            echo "[GIT] Dockerfile contents:"
+            cat Dockerfile
+            echo "[GIT] Getting commit SHA..."
+            git rev-parse HEAD > /workspace/sha.txt
+            echo "[GIT] Process completed with SHA:"
+            cat /workspace/sha.txt
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -98,8 +98,14 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
-          - "--context=/workspace"
-          - "--dockerfile=/workspace/Dockerfile"
+          - "--context=/workspace/source"
+          - "--dockerfile=/workspace/source/Dockerfile"
+          - "--cache=true"
+          - "--cache-repo=harbor.injunweb.com/injunweb/{{ $.Values.project }}/cache"
+          - "--compressed-caching=true"
+          - "--verbosity=info"
+          - "--log-format=text"
+          - "--log-timestamp=true"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
@@ -117,6 +123,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
+            echo "[CONFIG] Updating gitops repository..."
             curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
