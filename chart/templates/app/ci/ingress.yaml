@@ -3,14 +3,14 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-webhook
+  name: {{ $.Values.project }}-{{ $app.name }}-github-webhook-ingress
   namespace: {{ $.Values.project }}
 spec:
   entryPoints:
     - web
     - websecure
   routes:
-    - match: Host(`webhook.injunweb.com`) && PathPrefix(`/{{ $.Values.project }}-{{ $app.name }}`)
+    - match: Host(\`webhook.injunweb.com\`) && PathPrefix(\`/{{ $.Values.project }}-{{ $app.name }}\`)
       kind: Rule
       services:
         - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-svc

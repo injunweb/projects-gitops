@@ -11,6 +11,6 @@ spec:
   - port: {{ $app.port }}
     targetPort: {{ $app.port }}
   selector:
-    app: {{ $app.name }}
+    app: {{ $app.name }}-app
 {{- end }}
 {{- end }}

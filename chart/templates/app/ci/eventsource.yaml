@@ -3,18 +3,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-github
+  name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
   namespace: {{ $.Values.project }}
 spec:
   template:
-    serviceAccountName: argo-events-sa
+    serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   service:
     ports:
       - port: 12000
         targetPort: 12000
         name: webhook
   github:
-    {{ $app.name }}-github:
+    {{ $.Values.project }}-{{ $app.name }}-github-trigger:
       repositories:
         - owner: {{ $app.ghOwner }}
           names:
@@ -28,7 +28,7 @@ spec:
         - push
         - delete
       apiToken:
-        name: github-secret
+        name: {{ $.Values.project }}-github-access-secret
         key: token
       insecure: false
       active: true

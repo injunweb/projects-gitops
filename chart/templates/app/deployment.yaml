@@ -4,25 +4,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ $app.name }}
+  name: {{ $app.name }}-app
   namespace: {{ $.Values.project }}
 spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
-      app: {{ $app.name }}
+      app: {{ $app.name }}-app
   template:
     metadata:
       labels:
-        app: {{ $app.name }}
+        app: {{ $app.name }}-app
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ $app.name }}-app
+              topologyKey: "kubernetes.io/hostname"
+      terminationGracePeriodSeconds: 60
       containers:
-      - name: {{ $app.name }}
+      - name: {{ $app.name }}-app
         image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.tag }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
         ports:
         - containerPort: {{ $app.port }}
         envFrom:
         - secretRef:
-            name: {{ $app.name }}-secret
+            name: {{ $.Values.project }}-{{ $app.name }}-secret
             optional: true
         env:
         {{- range $db := $.Values.databases }}
@@ -38,7 +61,7 @@ spec:
         - name: {{ $db.name | upper }}_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- end }}
         {{- if eq $db.type "redis" }}
@@ -49,7 +72,7 @@ spec:
         - name: {{ $db.name | upper }}_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- end }}
         {{- if eq $db.type "postgres" }}
@@ -64,7 +87,7 @@ spec:
         - name: {{ $db.name | upper }}_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- end }}
         {{- if eq $db.type "mongodb" }}
@@ -79,7 +102,7 @@ spec:
         - name: {{ $db.name | upper }}_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- end }}
         {{- end }}

@@ -3,15 +3,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-sensor
+  name: {{ $.Values.project }}-{{ $app.name }}-github-workflow-sensor
   namespace: {{ $.Values.project }}
 spec:
   template:
-    serviceAccountName: argo-events-sa
+    serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   dependencies:
     - name: github-dep
-      eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github
-      eventName: {{ $app.name }}-github
+      eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
+      eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
   triggers:
     - template:
         name: workflow-trigger
@@ -22,8 +22,8 @@ spec:
               apiVersion: argoproj.io/v1alpha1
               kind: Workflow
               metadata:
-                generateName: {{ $.Values.project }}-{{ $app.name }}-build-
+                generateName: {{ $.Values.project }}-{{ $app.name }}-build-workflow-
               spec:
                 workflowTemplateRef:
-                  name: {{ $.Values.project }}-{{ $app.name }}-workflow
+                  name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
 {{- end }}

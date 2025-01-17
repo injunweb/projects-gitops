@@ -3,17 +3,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ $db.name }}
+  name: {{ $.Values.project }}-{{ $db.name }}-db
   namespace: {{ $.Values.project }}
 spec:
   serviceName: {{ $db.name }}
   selector:
     matchLabels:
-      app: {{ $db.name }}
+      app: {{ $.Values.project }}-{{ $db.name }}-db
   template:
     metadata:
       labels:
-        app: {{ $db.name }}
+        app: {{ $.Values.project }}-{{ $db.name }}-db
     spec:
       containers:
       - name: {{ $db.name }}
@@ -27,12 +27,12 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- else if eq $db.type "redis" }}
         args: ["--requirepass", "$(REDIS_PASSWORD)"]
@@ -40,7 +40,7 @@ spec:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- else if eq $db.type "postgres" }}
         env:
@@ -51,7 +51,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- else if eq $db.type "mongodb" }}
         env:
@@ -62,13 +62,13 @@ spec:
         - name: MONGO_INITDB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $db.name }}-secret
+              name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
         {{- end }}
         ports:
         - containerPort: {{ $db.port }}
         volumeMounts:
-        - name: data
+        - name: {{ $.Values.project }}-{{ $db.name }}-data
           {{- if eq $db.type "mysql" }}
           mountPath: /var/lib/mysql
           {{- else if eq $db.type "redis" }}
@@ -80,10 +80,10 @@ spec:
           {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: {{ $.Values.project }}-{{ $db.name }}-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: {{ $db.size }}
-{{- end }} 
+{{- end }}

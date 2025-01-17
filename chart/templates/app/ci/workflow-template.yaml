@@ -3,10 +3,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-workflow
+  name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
   namespace: {{ $.Values.project }}
 spec:
-  serviceAccountName: argo-events-sa
+  serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   entrypoint: build
   volumes:
     - name: docker-config
@@ -76,12 +76,12 @@ spec:
           - name: GIT_USERNAME
             valueFrom:
               secretKeyRef:
-                name: github-secret
+                name: {{ $.Values.project }}-github-access-secret
                 key: username
           - name: GIT_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: github-secret
+                name: {{ $.Values.project }}-github-access-secret
                 key: token
         volumeMounts:
           - name: workspace
@@ -143,6 +143,6 @@ spec:
           - name: GITHUB_TOKEN
             valueFrom:
               secretKeyRef:
-                name: github-secret
+                name: {{ $.Values.project }}-github-access-secret
                 key: token
 {{- end }}

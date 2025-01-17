@@ -10,6 +10,6 @@ spec:
   - port: {{ $db.port }}
     targetPort: {{ $db.port }}
   selector:
-    app: {{ $db.name }}
+    app: {{ $.Values.project }}-{{ $db.name }}-db
   clusterIP: None
 {{- end }}

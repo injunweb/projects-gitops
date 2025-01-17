@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventBus
+metadata:
+  name: {{ $.Values.project }}-ci-eventbus
+  namespace: {{ $.Values.project }}
+spec:
+  nats:
+    native:
+      auth: none
+      replicas: 3
+      antiAffinity: false
