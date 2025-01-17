@@ -6,6 +6,7 @@ metadata:
   name: {{ $.Values.project }}-{{ $app.name }}-github-workflow-sensor
   namespace: {{ $.Values.project }}
 spec:
+  eventBusName: {{ $.Values.project }}-ci-eventbus
   template:
     serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   dependencies:
