@@ -13,6 +13,6 @@ spec:
     - match: Host(`webhook.injunweb.com`) && Path(`/{{ $.Values.project }}-{{ $app.name }}`)
       kind: Rule
       services:
-        - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-svc
+        - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-eventsource-svc
           port: 12000
 {{- end }}
