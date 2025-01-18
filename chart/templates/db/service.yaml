@@ -11,5 +11,5 @@ spec:
     targetPort: {{ $db.port }}
   selector:
     app: {{ $.Values.project }}-{{ $db.name }}-db
-  clusterIP: None
+  # clusterIP: None
 {{- end }}
