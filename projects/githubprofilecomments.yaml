@@ -5,7 +5,7 @@ applications:
     port: 8080
     domains:
       - comment.ijw.app
-
+    tag: 187e1f5234b58895f369f87e873f549e03261b0f
 databases:
   - name: db
     type: mysql
