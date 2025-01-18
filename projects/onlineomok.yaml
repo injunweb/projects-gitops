@@ -5,4 +5,5 @@ applications:
     port: 8080
     domains:
       - omok.ijw.app
+      - stonify5.com
     tag: 79f7976a133bc4647ebf6eb2a19ad20f0a47f731
