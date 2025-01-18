@@ -1,0 +1,14 @@
+applications:
+  - name: webapp
+    ghOwner: in-jun
+    ghRepo: github-profile-comments
+    port: 8080
+    domains:
+      - comment.ijw.app
+
+databases:
+  - name: db
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
