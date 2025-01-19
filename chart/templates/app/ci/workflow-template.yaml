@@ -72,8 +72,6 @@ spec:
             git rev-parse HEAD > /workspace/sha.txt
             echo "[GIT] Process completed with SHA:"
             cat /workspace/sha.txt
-            # 컨테이너 내부 확인
-            ls -la /workspace/cache
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -99,16 +97,21 @@ spec:
             - "harbor.injunweb.com"
       container:
         image: gcr.io/kaniko-project/executor:latest
+        command: ["/busybox/sh", "-c"]
         args:
-          - "--context=/workspace/source"
-          - "--dockerfile=/workspace/source/Dockerfile"
-          - "--cache=true"
-          - "--cache-dir=/workspace/cache"
-          - "--snapshot-mode=full"
-          - "--verbosity=info"
-          - "--cleanup"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+          - |
+            echo "[BUILD] Ensuring cache directory exists..."
+            mkdir -p /workspace/cache
+            echo "[BUILD] Starting kaniko build..."
+            /kaniko/executor \
+              --context=/workspace/source \
+              --dockerfile=/workspace/source/Dockerfile \
+              --cache=true \
+              --cache-dir=/workspace/cache \
+              --snapshot-mode=full \
+              --cleanup \
+              --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}} \
+              --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
