@@ -1,0 +1,7 @@
+applications:
+  - name: backend
+    ghOwner: team-root
+    ghRepo: ROOT_BE
+    port: 8080
+    domains:
+      - root-api.ijw.app
