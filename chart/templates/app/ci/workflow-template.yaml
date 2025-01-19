@@ -22,24 +22,24 @@ spec:
     - name: build
       dag:
         tasks:
-          - name: clone
-            template: git-clone
+          - name: prepare
+            template: prepare-workspace
           - name: build
             template: build-container
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
-            dependencies: [clone]
+                  value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
+            dependencies: [prepare]
           - name: update-config
             template: update-config
             dependencies: [build]
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{tasks.clone.outputs.parameters.sha}}`}}"
+                  value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
 
-    - name: git-clone
+    - name: prepare-workspace
       outputs:
         parameters:
           - name: sha
@@ -50,27 +50,27 @@ spec:
         command: [sh, -c]
         args:
           - |
-            echo "[GIT] Starting git process..."
-            mkdir -p /workspace/source
+            echo "[PREPARE] Setting up workspace..."
+            mkdir -p /workspace/source /workspace/cache
             cd /workspace/source
-            echo "[GIT] Current source directory contents:"
+            echo "[PREPARE] Current source directory contents:"
             ls -la
             if [ -d ".git" ]; then
-              echo "[GIT] Repository exists, fetching updates..."
+              echo "[PREPARE] Repository exists, fetching updates..."
               git fetch origin HEAD
               git reset --hard FETCH_HEAD
             else
-              echo "[GIT] Clean clone required..."
+              echo "[PREPARE] Clean clone required..."
               rm -rf * .[!.]* 2>/dev/null || true
               git clone --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git .
             fi
-            echo "[GIT] Repository contents after clone/update:"
+            echo "[PREPARE] Repository contents after clone/update:"
             ls -la
-            echo "[GIT] Dockerfile contents:"
+            echo "[PREPARE] Dockerfile contents:"
             cat Dockerfile
-            echo "[GIT] Getting commit SHA..."
+            echo "[PREPARE] Getting commit SHA..."
             git rev-parse HEAD > /workspace/sha.txt
-            echo "[GIT] Process completed with SHA:"
+            echo "[PREPARE] Process completed with SHA:"
             cat /workspace/sha.txt
         env:
           - name: GIT_USERNAME
@@ -97,21 +97,15 @@ spec:
             - "harbor.injunweb.com"
       container:
         image: gcr.io/kaniko-project/executor:latest
-        command: ["/bin/sh", "-c"]
         args:
-          - |
-            echo "[BUILD] Ensuring cache directory exists..."
-            mkdir -p /workspace/cache
-            echo "[BUILD] Starting kaniko build..."
-            /kaniko/executor \
-              --context=/workspace/source \
-              --dockerfile=/workspace/source/Dockerfile \
-              --cache=true \
-              --cache-dir=/workspace/cache \
-              --snapshot-mode=full \
-              --cleanup \
-              --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}} \
-              --destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest
+          - "--context=/workspace/source"
+          - "--dockerfile=/workspace/source/Dockerfile"
+          - "--cache=true"
+          - "--cache-dir=/workspace/cache"
+          - "--snapshot-mode=full"
+          - "--cleanup"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
