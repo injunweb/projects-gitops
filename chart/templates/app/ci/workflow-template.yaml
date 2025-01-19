@@ -110,7 +110,6 @@ spec:
           - "--verbosity=info"
           - "--cache-copy-layers=true"
           - "--cache-run-layers=true"
-          - "--snapshotMode=redo"
           - "--cleanup"
         volumeMounts:
           - name: docker-config
