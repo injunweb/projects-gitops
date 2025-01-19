@@ -105,12 +105,10 @@ spec:
           - "--cache-dir=/workspace/cache"
           - "--cache-repo=harbor.injunweb.com/injunweb/{{ $.Values.project }}/cache"
           - "--compressed-caching=true"
-          - "--snapshot-mode=redo"
-          - "--use-new-run"
           - "--verbosity=info"
-          - "--cache-copy-layers=true"
-          - "--cache-run-layers=true"
           - "--cleanup"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
