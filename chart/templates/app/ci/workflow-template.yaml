@@ -72,6 +72,7 @@ spec:
             git rev-parse HEAD > /workspace/sha.txt
             echo "[PREPARE] Process completed with SHA:"
             cat /workspace/sha.txt
+            ls -la /workspace/cache
         env:
           - name: GIT_USERNAME
             valueFrom:
