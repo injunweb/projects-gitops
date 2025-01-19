@@ -108,8 +108,10 @@ spec:
           - "--snapshot-mode=redo"
           - "--use-new-run"
           - "--verbosity=info"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+          - "--cache-copy-layers=true"
+          - "--cache-run-layers=true"
+          - "--snapshotMode=redo"
+          - "--cleanup"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
