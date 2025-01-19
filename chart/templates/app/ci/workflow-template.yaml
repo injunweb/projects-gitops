@@ -72,6 +72,8 @@ spec:
             git rev-parse HEAD > /workspace/sha.txt
             echo "[GIT] Process completed with SHA:"
             cat /workspace/sha.txt
+            # 컨테이너 내부 확인
+            ls -la /workspace/cache
         env:
           - name: GIT_USERNAME
             valueFrom:
