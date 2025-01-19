@@ -97,7 +97,7 @@ spec:
             - "harbor.injunweb.com"
       container:
         image: gcr.io/kaniko-project/executor:latest
-        command: ["/busybox/sh", "-c"]
+        command: ["/bin/sh", "-c"]
         args:
           - |
             echo "[BUILD] Ensuring cache directory exists..."
