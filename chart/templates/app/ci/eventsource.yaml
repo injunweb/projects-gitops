@@ -28,11 +28,6 @@ spec:
       events:
         - push
         - delete
-      filter:
-        data:
-          - path: "ref"
-            type: "string"
-            value: "refs/heads/{{ $app.github.branch }}"
       apiToken:
         name: {{ $.Values.project }}-github-access-secret
         key: token
