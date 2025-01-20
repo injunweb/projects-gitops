@@ -53,11 +53,11 @@ spec:
             mkdir -p /workspace/source
             cd /workspace/source
             if [ -d ".git" ]; then
-              git fetch origin HEAD
-              git reset --hard FETCH_HEAD
+              git fetch origin {{ $app.github.branch }}
+              git reset --hard origin/{{ $app.github.branch }}
             else
               rm -rf * .[!.]* 2>/dev/null || true
-              git clone --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.github.owner }}/{{ $app.github.repo }}.git .
+              git clone -b {{ $app.github.branch }} --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.github.owner }}/{{ $app.github.repo }}.git .
             fi
             git rev-parse HEAD > /workspace/sha.txt
         env:
