@@ -24,13 +24,16 @@ spec:
         tasks:
           - name: prepare
             template: prepare-workspace
+          - name: warm-cache
+            template: cache-warmer
+            dependencies: [prepare]
           - name: build
             template: build-container
             arguments:
               parameters:
                 - name: sha
                   value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
-            dependencies: [prepare]
+            dependencies: [warm-cache]
           - name: update-config
             template: update-config
             dependencies: [build]
@@ -86,6 +89,16 @@ spec:
               secretKeyRef:
                 name: {{ $.Values.project }}-github-access-secret
                 key: token
+        volumeMounts:
+          - name: workspace
+            mountPath: /workspace
+
+    - name: cache-warmer
+      container:
+        image: gcr.io/kaniko-project/warmer:latest
+        args:
+          - "--cache-dir=/workspace/cache"
+          - "--dockerfile=/workspace/source/Dockerfile"
         volumeMounts:
           - name: workspace
             mountPath: /workspace
