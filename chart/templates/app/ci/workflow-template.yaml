@@ -50,28 +50,16 @@ spec:
         command: [sh, -c]
         args:
           - |
-            echo "[PREPARE] Setting up workspace..."
             mkdir -p /workspace/source
             cd /workspace/source
-            echo "[PREPARE] Current source directory contents:"
-            ls -la
             if [ -d ".git" ]; then
-              echo "[PREPARE] Repository exists, fetching updates..."
               git fetch origin HEAD
               git reset --hard FETCH_HEAD
             else
-              echo "[PREPARE] Clean clone required..."
               rm -rf * .[!.]* 2>/dev/null || true
               git clone --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.ghOwner }}/{{ $app.ghRepo }}.git .
             fi
-            echo "[PREPARE] Repository contents after clone/update:"
-            ls -la
-            echo "[PREPARE] Dockerfile contents:"
-            cat Dockerfile
-            echo "[PREPARE] Getting commit SHA..."
             git rev-parse HEAD > /workspace/sha.txt
-            echo "[PREPARE] Process completed with SHA:"
-            cat /workspace/sha.txt
         env:
           - name: GIT_USERNAME
             valueFrom:
