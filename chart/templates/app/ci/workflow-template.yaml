@@ -52,6 +52,7 @@ spec:
           - |
             echo "[PREPARE] Setting up workspace..."
             mkdir -p /workspace/source /workspace/cache
+            chmod -R 777 /workspace/cache
             cd /workspace/source
             echo "[PREPARE] Current source directory contents:"
             ls -la
@@ -72,6 +73,7 @@ spec:
             git rev-parse HEAD > /workspace/sha.txt
             echo "[PREPARE] Process completed with SHA:"
             cat /workspace/sha.txt
+            echo "[PREPARE] Cache directory contents:"
             ls -la /workspace/cache
         env:
           - name: GIT_USERNAME
@@ -103,7 +105,6 @@ spec:
           - "--dockerfile=/workspace/source/Dockerfile"
           - "--cache-dir=/workspace/cache"
           - "--cleanup"
-          - "--verbosity=debug"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
