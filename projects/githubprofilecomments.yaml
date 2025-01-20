@@ -1,7 +1,8 @@
 applications:
   - name: webapp
-    ghOwner: in-jun
-    ghRepo: github-profile-comments
+    github:
+      owner: in-jun
+      repo: github-profile-comments
     port: 8080
     domains:
       - comment.ijw.app

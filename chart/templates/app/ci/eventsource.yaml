@@ -17,9 +17,9 @@ spec:
   github:
     {{ $.Values.project }}-{{ $app.name }}-github-trigger:
       repositories:
-        - owner: {{ $app.ghOwner }}
+        - owner: {{ $app.github.owner }}
           names:
-            - {{ $app.ghRepo }}
+            - {{ $app.github.repo }}
       webhook:
         endpoint: /{{ $.Values.project }}-{{ $app.name }}
         port: "12000"

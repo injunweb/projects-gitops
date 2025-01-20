@@ -1,7 +1,8 @@
 applications:
   - name: webapp
-    ghOwner: in-jun
-    ghRepo: Online-omok
+    github:
+      owner: in-jun
+      repo: Online-omok
     port: 8080
     domains:
       - omok.ijw.app

@@ -1,14 +1,16 @@
 applications:
   - name: app1
-    ghOwner: in-jun
-    ghRepo: test
+    github:
+      owner: in-jun
+      repo: test
     port: 8000
     domains:
       - custom1.example.com
 
   - name: app2
-    ghOwner: example-org
-    ghRepo: custom-app
+    github:
+      owner: example-org
+      repo: custom-app
     port: 5000
     domains:
       - custom2.example.com
