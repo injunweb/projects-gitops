@@ -3,6 +3,7 @@ applications:
     github:
       owner: in-jun
       repo: Online-omok
+      branch: main
     port: 8080
     domains:
       - omok.ijw.app

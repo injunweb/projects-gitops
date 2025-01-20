@@ -3,6 +3,7 @@ applications:
     github:
       owner: in-jun
       repo: commit-canvas
+      branch: main
     port: 8080
     domains:
       - commit-canvas.ijw.app

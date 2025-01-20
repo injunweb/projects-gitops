@@ -3,6 +3,7 @@ applications:
     github:
       owner: in-jun
       repo: github-profile-comments
+      branch: main
     port: 8080
     domains:
       - comment.ijw.app

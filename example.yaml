@@ -3,6 +3,7 @@ applications:
     github:
       owner: in-jun
       repo: test
+      branch: develop
     port: 8000
     domains:
       - custom1.example.com
@@ -11,6 +12,7 @@ applications:
     github:
       owner: example-org
       repo: custom-app
+      branch: develop
     port: 5000
     domains:
       - custom2.example.com
