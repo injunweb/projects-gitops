@@ -16,7 +16,7 @@ applications:
     port: 8080
     domains:
       - root-test.ijw.app
-    tag: 3e1b5eab8d65049799da060928a86cb010d828b4
+    tag: 26e4c3f83f6b1a124e15bb81ca0a77a89bda4bfc
 databases:
   - name: mysql
     type: mysql
