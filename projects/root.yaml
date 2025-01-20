@@ -8,7 +8,6 @@ applications:
     domains:
       - root-api.ijw.app
     tag: f8abf2cf5280e3a4ef5abfd6dc749d86f41b465f
-
   - name: test
     github:
       owner: team-root
@@ -17,14 +16,13 @@ applications:
     port: 8080
     domains:
       - root-test.ijw.app
-
+    tag: 3fcb44e4319d53a796bf0968b17c436e0bb4274a
 databases:
   - name: mysql
     type: mysql
     version: "8.0"
     port: 3306
     size: 1Gi
-
   - name: redis
     type: redis
     version: "6.0"
