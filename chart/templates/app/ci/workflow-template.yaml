@@ -24,16 +24,13 @@ spec:
         tasks:
           - name: prepare
             template: prepare-workspace
-          - name: warm-cache
-            template: cache-warmer
-            dependencies: [prepare]
           - name: build
             template: build-container
             arguments:
               parameters:
                 - name: sha
                   value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
-            dependencies: [warm-cache]
+            dependencies: [prepare]
           - name: update-config
             template: update-config
             dependencies: [build]
@@ -54,8 +51,7 @@ spec:
         args:
           - |
             echo "[PREPARE] Setting up workspace..."
-            mkdir -p /workspace/source /workspace/cache
-            chmod -R 777 /workspace/cache
+            mkdir -p /workspace/source
             cd /workspace/source
             echo "[PREPARE] Current source directory contents:"
             ls -la
@@ -76,8 +72,6 @@ spec:
             git rev-parse HEAD > /workspace/sha.txt
             echo "[PREPARE] Process completed with SHA:"
             cat /workspace/sha.txt
-            echo "[PREPARE] Cache directory contents:"
-            ls -la /workspace/cache
         env:
           - name: GIT_USERNAME
             valueFrom:
@@ -89,16 +83,6 @@ spec:
               secretKeyRef:
                 name: {{ $.Values.project }}-github-access-secret
                 key: token
-        volumeMounts:
-          - name: workspace
-            mountPath: /workspace
-
-    - name: cache-warmer
-      container:
-        image: gcr.io/kaniko-project/warmer:latest
-        args:
-          - "--cache-dir=/workspace/cache"
-          - "--dockerfile=/workspace/source/Dockerfile"
         volumeMounts:
           - name: workspace
             mountPath: /workspace
@@ -116,9 +100,6 @@ spec:
         args:
           - "--context=/workspace/source"
           - "--dockerfile=/workspace/source/Dockerfile"
-          - "--cache=true"
-          - "--cache-dir=/workspace/cache"
-          - "--no-push-cache"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
