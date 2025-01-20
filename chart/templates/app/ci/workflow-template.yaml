@@ -101,9 +101,7 @@ spec:
         args:
           - "--context=/workspace/source"
           - "--dockerfile=/workspace/source/Dockerfile"
-          - "--cache=true"
           - "--cache-dir=/workspace/cache"
-          - "--snapshot-mode=redo"
           - "--cleanup"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
