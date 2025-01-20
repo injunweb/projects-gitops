@@ -103,6 +103,7 @@ spec:
           - "--dockerfile=/workspace/source/Dockerfile"
           - "--cache-dir=/workspace/cache"
           - "--cleanup"
+          - "--verbosity=debug"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
