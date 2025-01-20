@@ -119,7 +119,6 @@ spec:
           - "--cache=true"
           - "--cache-dir=/workspace/cache"
           - "--no-push-cache"
-          - "--cleanup"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
         volumeMounts:
