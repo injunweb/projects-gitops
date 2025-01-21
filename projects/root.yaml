@@ -25,7 +25,7 @@ applications:
     port: 7681
     domains:
       - root-tunnel.ijw.app
-    tag: 1d6e9405aa7856db8afa52bd31b24c60bfeafb41
+    tag: db2f8c0e7cb11ab97e948eb9573227947d0719c1
 databases:
   - name: mysql
     type: mysql
