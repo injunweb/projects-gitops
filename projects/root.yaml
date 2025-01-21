@@ -8,6 +8,7 @@ applications:
     domains:
       - root-api.ijw.app
     tag: 3fcb44e4319d53a796bf0968b17c436e0bb4274a
+
   - name: test
     github:
       owner: team-root
@@ -17,6 +18,16 @@ applications:
     domains:
       - root-test.ijw.app
     tag: 3f9ff2078de8ec9d315637c0da263eab0e3d5f01
+
+  - name: tunnel
+    github:
+      owner: team-root
+      repo: web-terminal-tools
+      branch: main
+    domains:
+      - root-tunnel.ijw.app
+    port: 7681
+
 databases:
   - name: mysql
     type: mysql
