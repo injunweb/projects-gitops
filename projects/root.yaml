@@ -24,9 +24,9 @@ applications:
       owner: team-root
       repo: web-terminal-tools
       branch: main
+    port: 7681
     domains:
       - root-tunnel.ijw.app
-    port: 7681
 
 databases:
   - name: mysql
