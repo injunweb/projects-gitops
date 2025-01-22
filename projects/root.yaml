@@ -16,7 +16,7 @@ applications:
     port: 8080
     domains:
       - root-test.ijw.app
-    tag: d6ff02bcbbd39cd79e011dbef1f3abb6cc7facfc
+    tag: 3bee10fdebe4327e1a08afbcdaa9daf0ef4722d5
   - name: tunnel
     github:
       owner: team-root
