@@ -8,15 +8,6 @@ applications:
     domains:
       - root-api.ijw.app
     tag: 3fcb44e4319d53a796bf0968b17c436e0bb4274a
-  - name: test
-    github:
-      owner: team-root
-      repo: ROOT_BE
-      branch: 5-auth
-    port: 8080
-    domains:
-      - root-test.ijw.app
-    tag: 7f455cfd0ce40dc6fe6f9ca6152dc7e20019982e
   - name: tunnel
     github:
       owner: team-root
