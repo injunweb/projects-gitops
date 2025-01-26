@@ -7,7 +7,7 @@ applications:
     port: 8080
     domains:
       - root-api.ijw.app
-    tag: 6607f30b24143625e58d5fb6bebe8254002b76d0
+    tag: d719d35c7d2d51e513cd9ca1b69f3c347c81466b
   - name: tunnel
     github:
       owner: team-root
