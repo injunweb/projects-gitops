@@ -7,7 +7,7 @@ applications:
     port: 8080
     domains:
       - bobmukza-api.ijw.app
-
+    tag: 4fab62b81ffdf7656d9b7967bb8f4fe8c25607e2
 databases:
   - name: mysql
     type: mysql
