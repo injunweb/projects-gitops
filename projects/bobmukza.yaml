@@ -1,0 +1,16 @@
+applications:
+  - name: backend
+    github:
+      owner: bobmukza-appjam-2024
+      repo: BE
+      branch: main
+    port: 8080
+    domains:
+      - bobmukza-api.ijw.app
+
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
