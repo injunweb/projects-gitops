@@ -9,7 +9,7 @@ applications:
       - bobmukza-api.ijw.app
     tag: 4fab62b81ffdf7656d9b7967bb8f4fe8c25607e2
 databases:
-  - name: mysql
+  - name: db
     type: mysql
     version: "8.0"
     port: 3306
