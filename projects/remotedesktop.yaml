@@ -1,0 +1,9 @@
+applications:
+  - name: web
+    github:
+      owner: in-jun
+      repo: remote-desktop
+      branch: main
+    port: 3000
+    domains:
+      - remote-desktop.ijw.app
