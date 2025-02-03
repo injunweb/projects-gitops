@@ -53,11 +53,11 @@ spec:
             mkdir -p /workspace/source
             cd /workspace/source
             if [ -d ".git" ]; then
-              git fetch origin {{ $app.github.branch }}
-              git reset --hard origin/{{ $app.github.branch }}
+              git fetch origin {{ $app.git.branch }}
+              git reset --hard origin/{{ $app.git.branch }}
             else
               rm -rf * .[!.]* 2>/dev/null || true
-              git clone -b {{ $app.github.branch }} --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.github.owner }}/{{ $app.github.repo }}.git .
+              git clone -b {{ $app.git.branch }} --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git .
             fi
             git rev-parse HEAD > /workspace/sha.txt
         env:
@@ -115,7 +115,7 @@ spec:
                   "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
                   "action": "apply",
                   "spec": {
-                    "tag": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                    "git.hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
                   }
                 }
               }'

@@ -1,5 +1,5 @@
 {{- range $app := .Values.applications }}
-{{- if $app.tag }}
+{{- if $app.git.hash }}
 ---
 apiVersion: v1
 kind: Service

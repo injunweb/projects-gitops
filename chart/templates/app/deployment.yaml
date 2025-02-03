@@ -1,5 +1,5 @@
 {{- range $app := .Values.applications }}
-{{- if $app.tag }}
+{{- if $app.git.hash }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,94 +24,94 @@ spec:
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  - {{ $app.name }}-app
-              topologyKey: "kubernetes.io/hostname"
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ $app.name }}-app
+                topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 120
       containers:
-      - name: {{ $app.name }}-app
-        image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.tag }}
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/sh", "-c", "sleep 10"]
-        ports:
-        - containerPort: {{ $app.port }}
-        readinessProbe:
-          tcpSocket:
-            port: {{ $app.port }}
-          initialDelaySeconds: 20
-          periodSeconds: 10
-          successThreshold: 3
-        envFrom:
-        - secretRef:
-            name: {{ $.Values.project }}-{{ $app.name }}-secret
-            optional: true
-        env:
-        {{- range $db := $.Values.databases }}
-        {{- if eq $db.type "mysql" }}
-        - name: {{ $db.name | upper }}_HOST
-          value: {{ $db.name }}
-        - name: {{ $db.name | upper }}_PORT
-          value: {{ $db.port | quote }}
-        - name: {{ $db.name | upper }}_DATABASE
-          value: {{ $db.name }}_db
-        - name: {{ $db.name | upper }}_USER
-          value: {{ $db.name }}_user
-        - name: {{ $db.name | upper }}_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $.Values.project }}-{{ $db.name }}-secret
-              key: password
-        {{- end }}
-        {{- if eq $db.type "redis" }}
-        - name: {{ $db.name | upper }}_HOST
-          value: {{ $db.name }}
-        - name: {{ $db.name | upper }}_PORT
-          value: {{ $db.port | quote }}
-        - name: {{ $db.name | upper }}_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $.Values.project }}-{{ $db.name }}-secret
-              key: password
-        {{- end }}
-        {{- if eq $db.type "postgres" }}
-        - name: {{ $db.name | upper }}_HOST
-          value: {{ $db.name }}
-        - name: {{ $db.name | upper }}_PORT
-          value: {{ $db.port | quote }}
-        - name: {{ $db.name | upper }}_DB
-          value: {{ $db.name }}_db
-        - name: {{ $db.name | upper }}_USER
-          value: {{ $db.name }}_user
-        - name: {{ $db.name | upper }}_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $.Values.project }}-{{ $db.name }}-secret
-              key: password
-        {{- end }}
-        {{- if eq $db.type "mongodb" }}
-        - name: {{ $db.name | upper }}_HOST
-          value: {{ $db.name }}
-        - name: {{ $db.name | upper }}_PORT
-          value: {{ $db.port | quote }}
-        - name: {{ $db.name | upper }}_DB
-          value: {{ $db.name }}_db
-        - name: {{ $db.name | upper }}_USER
-          value: {{ $db.name }}_user
-        - name: {{ $db.name | upper }}_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ $.Values.project }}-{{ $db.name }}-secret
-              key: password
-        {{- end }}
-        {{- end }}
+        - name: {{ $app.name }}-app
+          image: harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{ $app.git.hash }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 10"]
+          ports:
+            - containerPort: {{ $app.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ $app.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            successThreshold: 3
+          envFrom:
+            - secretRef:
+                name: {{ $.Values.project }}-{{ $app.name }}-secret
+                optional: true
+          env:
+            {{- range $db := $.Values.databases }}
+            {{- if eq $db.type "mysql" }}
+            - name: {{ $db.name | upper }}_HOST
+              value: {{ $db.name }}
+            - name: {{ $db.name | upper }}_PORT
+              value: {{ $db.port | quote }}
+            - name: {{ $db.name | upper }}_DATABASE
+              value: {{ $db.name }}_db
+            - name: {{ $db.name | upper }}_USER
+              value: {{ $db.name }}_user
+            - name: {{ $db.name | upper }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.project }}-{{ $db.name }}-secret
+                  key: password
+            {{- end }}
+            {{- if eq $db.type "redis" }}
+            - name: {{ $db.name | upper }}_HOST
+              value: {{ $db.name }}
+            - name: {{ $db.name | upper }}_PORT
+              value: {{ $db.port | quote }}
+            - name: {{ $db.name | upper }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.project }}-{{ $db.name }}-secret
+                  key: password
+            {{- end }}
+            {{- if eq $db.type "postgres" }}
+            - name: {{ $db.name | upper }}_HOST
+              value: {{ $db.name }}
+            - name: {{ $db.name | upper }}_PORT
+              value: {{ $db.port | quote }}
+            - name: {{ $db.name | upper }}_DB
+              value: {{ $db.name }}_db
+            - name: {{ $db.name | upper }}_USER
+              value: {{ $db.name }}_user
+            - name: {{ $db.name | upper }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.project }}-{{ $db.name }}-secret
+                  key: password
+            {{- end }}
+            {{- if eq $db.type "mongodb" }}
+            - name: {{ $db.name | upper }}_HOST
+              value: {{ $db.name }}
+            - name: {{ $db.name | upper }}_PORT
+              value: {{ $db.port | quote }}
+            - name: {{ $db.name | upper }}_DB
+              value: {{ $db.name }}_db
+            - name: {{ $db.name | upper }}_USER
+              value: {{ $db.name }}_user
+            - name: {{ $db.name | upper }}_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.project }}-{{ $db.name }}-secret
+                  key: password
+            {{- end }}
+            {{- end }}
       imagePullSecrets:
         - name: registry-secret
 {{- end }}

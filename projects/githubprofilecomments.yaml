@@ -1,13 +1,15 @@
 applications:
   - name: webapp
-    github:
+    git:
+      type: github
       owner: in-jun
       repo: github-profile-comments
       branch: main
+      size: 1Gi
+      hash: 187e1f5234b58895f369f87e873f549e03261b0f
     port: 8080
     domains:
       - comment.ijw.app
-    tag: 187e1f5234b58895f369f87e873f549e03261b0f
 databases:
   - name: db
     type: mysql
