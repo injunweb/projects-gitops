@@ -10,7 +10,6 @@ applications:
     port: 8080
     domains:
       - root-api.ijw.app
-    git.hash: 9bed6487e69c3dc27d237e125cfe5e8d3a393b79
   - name: tunnel
     git:
       type: github
