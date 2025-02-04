@@ -115,7 +115,9 @@ spec:
                   "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
                   "action": "apply",
                   "spec": {
-                    "git.hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                    "git": {
+                      "hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                    }
                   }
                 }
               }'
