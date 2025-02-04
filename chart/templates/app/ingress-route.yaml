@@ -5,7 +5,7 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-route
+  name: {{ $.Values.project }}-{{ $app.name }}-{{ $domain | replace "." "-" }}-route
   namespace: {{ $.Values.project }}
 spec:
   entryPoints:
