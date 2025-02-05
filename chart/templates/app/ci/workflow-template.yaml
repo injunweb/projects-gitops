@@ -90,6 +90,8 @@ spec:
           - "--dockerfile=/workspace/source/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+          - "--cache=true"
+          - "--cache-repo=harbor.injunweb.com/injunweb/cache"
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
