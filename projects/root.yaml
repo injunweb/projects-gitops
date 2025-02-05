@@ -6,7 +6,7 @@ applications:
       repo: ROOT_BE
       branch: develop
       size: 1Gi
-      hash: 9e32108c9bf5f13ed35690ca655788121835f06b
+      hash: f8c6c0a772081d5b2fc9b886d7d0fd785b8da649
     port: 8080
     domains:
       - root-api.ijw.app
