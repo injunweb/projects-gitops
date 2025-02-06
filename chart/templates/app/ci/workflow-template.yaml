@@ -90,6 +90,7 @@ spec:
           - "--dockerfile=/workspace/source/Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
+          - "--registry-mirror=harbor.injunweb.com/proxy"
           - "--cache=true"
           - "--cache-repo=harbor.injunweb.com/injunweb/cache"
         volumeMounts:
