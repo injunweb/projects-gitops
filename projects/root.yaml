@@ -6,11 +6,10 @@ applications:
       repo: ROOT_BE
       branch: develop
       size: 1Gi
-      hash: 6a34a1dda302a14b5e7863c5804ffc95b40cf5f9
+      hash: b057f2580bbf89adaf2cfd973a9aa15fbfa815ba
     port: 8080
     domains:
       - root-api.ijw.app
-
   - name: frontend
     git:
       type: github
@@ -21,7 +20,6 @@ applications:
     port: 3000
     domains:
       - root.ijw.app
-
   - name: tunnel
     git:
       type: github
