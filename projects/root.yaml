@@ -10,6 +10,18 @@ applications:
     port: 8080
     domains:
       - root-api.ijw.app
+
+  - name: frontend
+    git:
+      type: github
+      owner: team-root
+      repo: ROOT_FE
+      branch: develop
+      size: 1Gi
+    port: 3000
+    domains:
+      - root.ijw.app
+
   - name: tunnel
     git:
       type: github
