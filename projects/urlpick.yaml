@@ -1,0 +1,17 @@
+applications:
+  - name: api
+    git:
+      type: github
+      owner: urlpick
+      repo: urlpick-api
+      branch: main
+      size: 1Gi
+    port: 8080
+    domains:
+      - urlpick-api.ijw.app
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
