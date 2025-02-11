@@ -10,7 +10,6 @@ applications:
     port: 8080
     domains:
       - bobmukza-api.ijw.app
-
 databases:
   - name: db
     type: mysql
