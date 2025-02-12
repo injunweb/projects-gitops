@@ -29,7 +29,7 @@ applications:
       branch: main
       size: 1Gi
       hash: b6ed8dedbfe3325172aaeea5742bfb6368790d02
-    port: 3000
+    port: 80
     domains:
       - url.ijw.app
 databases:
