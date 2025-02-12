@@ -28,7 +28,7 @@ applications:
       repo: urlpick-redirect
       branch: main
       size: 1Gi
-      hash: b6ed8dedbfe3325172aaeea5742bfb6368790d02
+      hash: 9db7ba1c412d31eb879ec8b705b275287512504e
     port: 80
     domains:
       - url.ijw.app
