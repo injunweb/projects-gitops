@@ -10,6 +10,16 @@ applications:
     port: 8080
     domains:
       - urlpick-api.ijw.app
+  - name: frontend
+    git:
+      type: github
+      owner: urlpick
+      repo: urlpick-frontend
+      branch: main
+      size: 1Gi
+    port: 80
+    domains:
+      - url.ijw.app
 databases:
   - name: mysql
     type: mysql
