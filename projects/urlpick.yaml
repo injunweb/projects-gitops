@@ -10,28 +10,6 @@ applications:
     port: 8080
     domains:
       - urlpick-api.ijw.app
-  - name: create
-    git:
-      type: github
-      owner: urlpick
-      repo: urlpick-create
-      branch: main
-      size: 1Gi
-      hash: 7964b236c58475d3501b6047becceb0b19e63915
-    port: 3000
-    domains:
-      - urlpick.ijw.app
-  - name: redirect
-    git:
-      type: github
-      owner: urlpick
-      repo: urlpick-redirect
-      branch: main
-      size: 1Gi
-      hash: 9db7ba1c412d31eb879ec8b705b275287512504e
-    port: 80
-    domains:
-      - url.ijw.app
 databases:
   - name: mysql
     type: mysql
