@@ -17,6 +17,7 @@ applications:
       repo: urlpick-frontend
       branch: main
       size: 1Gi
+      hash: 1343a83fa1d1250f2b722e41b7d82444bea38ed0
     port: 80
     domains:
       - url.ijw.app
