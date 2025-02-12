@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
       group: config-update
-      cancel-in-progress: true
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v3
 
