@@ -8,6 +8,10 @@ metadata:
 spec:
   serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   entrypoint: build
+  arguments:
+    parameters:
+      - name: git_sha
+        description: "Git commit hash"
   volumes:
     - name: docker-config
       secret:
@@ -15,65 +19,23 @@ spec:
         items:
           - key: .dockerconfigjson
             path: config.json
-    - name: workspace
-      persistentVolumeClaim:
-        claimName: {{ $.Values.project }}-{{ $app.name }}-workspace-pvc
   templates:
     - name: build
       dag:
         tasks:
-          - name: prepare
-            template: prepare-workspace
           - name: build
             template: build-container
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
-            dependencies: [prepare]
+                  value: "{{`{{workflow.parameters.git_sha}}`}}"
           - name: update-config
             template: update-config
             dependencies: [build]
             arguments:
               parameters:
                 - name: sha
-                  value: "{{`{{tasks.prepare.outputs.parameters.sha}}`}}"
-
-    - name: prepare-workspace
-      outputs:
-        parameters:
-          - name: sha
-            valueFrom:
-              path: /workspace/sha.txt
-      container:
-        image: alpine/git:latest
-        command: [sh, -c]
-        args:
-          - |
-            mkdir -p /workspace/source
-            cd /workspace/source
-            if [ -d ".git" ]; then
-              git fetch origin {{ $app.git.branch }}
-              git reset --hard origin/{{ $app.git.branch }}
-            else
-              rm -rf * .[!.]* 2>/dev/null || true
-              git clone -b {{ $app.git.branch }} --depth 1 https://$(GIT_USERNAME):$(GIT_PASSWORD)@github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git .
-            fi
-            git rev-parse HEAD > /workspace/sha.txt
-        env:
-          - name: GIT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.project }}-github-access-secret
-                key: username
-          - name: GIT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.project }}-github-access-secret
-                key: token
-        volumeMounts:
-          - name: workspace
-            mountPath: /workspace
+                  value: "{{`{{workflow.parameters.git_sha}}`}}"
 
     - name: build-container
       inputs:
@@ -86,18 +48,27 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
-          - "--context=/workspace/source"
-          - "--dockerfile=/workspace/source/Dockerfile"
+          - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
+          - "--dockerfile=Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
           - "--registry-mirror=harbor.injunweb.com/proxy"
           - "--cache=true"
           - "--cache-repo=harbor.injunweb.com/injunweb/cache"
+        env:
+          - name: GIT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.project }}-github-access-secret
+                key: username
+          - name: GIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ $.Values.project }}-github-access-secret
+                key: token
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
-          - name: workspace
-            mountPath: /workspace
 
     - name: update-config
       inputs:

@@ -32,6 +32,10 @@ spec:
               metadata:
                 generateName: {{ $.Values.project }}-{{ $app.name }}-build-workflow-
               spec:
+                arguments:
+                  parameters:
+                    - name: git_sha
+                      value: "{{`{{body.after}}`}}"
                 workflowTemplateRef:
                   name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
 {{- end }}
