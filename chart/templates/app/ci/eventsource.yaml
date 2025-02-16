@@ -27,7 +27,6 @@ spec:
         url: https://webhook.injunweb.com
       events:
         - push
-        - delete
       apiToken:
         name: {{ $.Values.project }}-github-access-secret
         key: token
