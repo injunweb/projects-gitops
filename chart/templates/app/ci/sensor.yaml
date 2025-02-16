@@ -13,6 +13,11 @@ spec:
     - name: github-dep
       eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
       eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
+      filters:
+        data:
+          - path: body.ref
+            type: string
+            value: refs/heads/test
   triggers:
     - template:
         name: workflow-trigger
