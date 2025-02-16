@@ -17,7 +17,8 @@ spec:
         data:
           - path: body.ref
             type: string
-            value: refs/heads/test
+            value:
+              - refs/heads/test
   triggers:
     - template:
         name: workflow-trigger
