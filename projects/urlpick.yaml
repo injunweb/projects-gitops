@@ -6,7 +6,7 @@ applications:
       repo: urlpick-api
       branch: main
       size: 1Gi
-      hash: c784542b3a3ba56e0f45b75a02b1bea0639d2029
+      hash: 2e833945e9506892321ba2c94bf8956d0c200fcc
     port: 8080
     domains:
       - urlpick-api.ijw.app
