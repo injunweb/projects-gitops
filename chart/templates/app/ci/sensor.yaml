@@ -17,6 +17,7 @@ spec:
         data:
           - path: body.ref
             type: string
+            comparator: "="
             value:
               - refs/heads
   triggers:
