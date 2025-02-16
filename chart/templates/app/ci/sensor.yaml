@@ -35,7 +35,7 @@ spec:
                 arguments:
                   parameters:
                     - name: git_sha
-                      value: "{{`{{body.after}}`}}"
+                      value: a
                 workflowTemplateRef:
                   name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
 {{- end }}
