@@ -19,7 +19,7 @@ spec:
             type: string
             comparator: "="
             value:
-              - refs/heads
+              - "refs/heads"
   triggers:
     - template:
         name: workflow-trigger
