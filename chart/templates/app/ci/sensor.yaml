@@ -17,7 +17,7 @@ spec:
         data:
           - path: body.ref
             type: string
-            value: refs/heads/main
+            value: refs/heads/deasdf
             operation: equals
   triggers:
     - template:
