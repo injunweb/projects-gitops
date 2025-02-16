@@ -15,7 +15,7 @@ spec:
       eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
       filters:
         data:
-          - path: "data.body.ref"
+          - path: body.ref
             type: string
             value:
               - refs/heads/{{ $app.git.branch }}
