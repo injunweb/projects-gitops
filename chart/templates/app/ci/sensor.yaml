@@ -18,7 +18,7 @@ spec:
           - path: data.body.ref
             type: string
             value:
-              - refs/heads/test
+              - refs/heads/{{ $app.git.branch }}
   triggers:
     - template:
         name: workflow-trigger
