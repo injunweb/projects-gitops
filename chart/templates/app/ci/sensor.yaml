@@ -19,7 +19,7 @@ spec:
             type: string
             comparator: "="
             value:
-              - "refs/heads/test"
+              - "refs/heads/{{ $app.git.branch }}"
   triggers:
     - template:
         name: workflow-trigger
