@@ -5,7 +5,6 @@ applications:
       owner: team-root
       repo: ROOT_BE
       branch: develop
-      size: 1Gi
       hash: 0d1dcd61570d98a62773e8ff617a191456f5a1b0
     port: 8080
     domains:
@@ -16,7 +15,6 @@ applications:
       owner: team-root
       repo: ROOT_FE
       branch: develop
-      size: 1Gi
     port: 3000
     domains:
       - root.ijw.app
