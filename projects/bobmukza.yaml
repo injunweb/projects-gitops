@@ -5,7 +5,6 @@ applications:
       owner: bobmukza-appjam-2024
       repo: BE
       branch: main
-      size: 1Gi
       hash: 4fab62b81ffdf7656d9b7967bb8f4fe8c25607e2
     port: 8080
     domains:
