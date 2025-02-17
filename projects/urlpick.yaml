@@ -5,7 +5,6 @@ applications:
       owner: urlpick
       repo: urlpick-api
       branch: main
-      size: 1Gi
       hash: 2e833945e9506892321ba2c94bf8956d0c200fcc
     port: 8080
     domains:
@@ -16,7 +15,6 @@ applications:
       owner: urlpick
       repo: urlpick-frontend
       branch: main
-      size: 1Gi
       hash: 802fcddd5c4c67db634e0b0a35b21f6740959440
     port: 80
     domains:
