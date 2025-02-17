@@ -5,7 +5,6 @@ applications:
       owner: in-jun
       repo: Online-omok
       branch: main
-      size: 1Gi
       hash: 79f7976a133bc4647ebf6eb2a19ad20f0a47f731
     port: 8080
     domains:
