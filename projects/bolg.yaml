@@ -1,0 +1,10 @@
+applications:
+  - name: hugo
+    git:
+      type: github
+      owner: in-jun
+      repo: blog
+      branch: main
+    port: 80
+    domains:
+      - blog.ijw.app
