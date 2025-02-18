@@ -5,6 +5,7 @@ applications:
       owner: in-jun
       repo: blog
       branch: main
+      hash: d69da93c5d25270a39cd59ea32f8c175f8f9e88d
     port: 80
     domains:
       - blog.ijw.app
