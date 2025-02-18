@@ -9,3 +9,5 @@ applications:
     port: 80
     domains:
       - blog.ijw.app
+      - blog.injunweb.com
+      - injunweb.com
