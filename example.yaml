@@ -6,7 +6,6 @@ applications:
       repo: custom-app
       branch: develop
       hash: ~
-      size: 1Gi
     port: 8000
     domains:
       - custom1.example.com
@@ -17,7 +16,6 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-      size: 1Gi
     port: 5000
     domains:
       - custom2.example.com
