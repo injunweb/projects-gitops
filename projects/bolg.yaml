@@ -8,5 +8,4 @@ applications:
       hash: 0e0a6259c4fe4d1fb05f0ba0f057768457a48621
     port: 80
     domains:
-      - blog.injunweb.com
-      - injunweb.com
+      - blog.injun.dev
