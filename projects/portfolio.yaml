@@ -5,6 +5,7 @@ applications:
       owner: in-jun
       repo: portfolio
       branch: main
+      hash: 024b26d7a6477c3855b09d2daad2963e255e4326
     port: 80
     domains:
       - injun.dev
