@@ -1,0 +1,10 @@
+applications:
+  - name: portfolio
+    git:
+      type: github
+      owner: in-jun
+      repo: portfolio
+      branch: main
+    port: 80
+    domains:
+      - injun.dev
