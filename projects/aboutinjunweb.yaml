@@ -1,0 +1,10 @@
+applications:
+  - name: about
+    git:
+      type: github
+      owner: injunweb
+      repo: about-injunweb
+      branch: main
+    port: 80
+    domains:
+      - injunweb.com
