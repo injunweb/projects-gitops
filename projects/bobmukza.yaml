@@ -7,7 +7,7 @@ applications:
       branch: main
       hash: 4fab62b81ffdf7656d9b7967bb8f4fe8c25607e2
     port: 8080
-    domains:
+    routes:
       - bobmukza-api.ijw.app
 databases:
   - name: db
