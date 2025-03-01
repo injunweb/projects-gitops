@@ -7,7 +7,7 @@ applications:
       branch: develop
       hash: dea76549f3921997d047d09f82529be6da326833
     port: 8080
-    domains:
+    routes:
       - root-api.ijw.app
   - name: frontend
     git:
@@ -16,7 +16,7 @@ applications:
       repo: ROOT_FE
       branch: develop
     port: 3000
-    domains:
+    routes:
       - root.ijw.app
   - name: tunnel
     git:
@@ -27,7 +27,7 @@ applications:
       size: 1Gi
       hash: 52fdffd31f152ebff7272d2ae41f78e058bda021
     port: 7681
-    domains:
+    routes:
       - root-tunnel.ijw.app
 databases:
   - name: mysql

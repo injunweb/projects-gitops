@@ -7,5 +7,5 @@ applications:
       branch: main
       hash: 15ce159db795481c10088993b64f955013eb6866
     port: 80
-    domains:
+    routes:
       - injun.dev

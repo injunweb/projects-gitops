@@ -7,7 +7,7 @@ applications:
       branch: main
       hash: 187e1f5234b58895f369f87e873f549e03261b0f
     port: 8080
-    domains:
+    routes:
       - comment.ijw.app
 databases:
   - name: db

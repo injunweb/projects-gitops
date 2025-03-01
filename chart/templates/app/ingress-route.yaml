@@ -1,22 +1,48 @@
 {{- range $app := .Values.applications }}
 {{- if $app.git.hash }}
-{{- range $domain := $app.domains }}
+{{- range $route := $app.routes }}
+{{- $domain := regexFind "^[^/]+" $route }}
+{{- $path := regexFind "/.*" $route | default "" }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-{{ $domain | replace "." "-" }}-route
+  name: {{ $.Values.project }}-{{ $app.name }}-{{ $domain | replace "." "-" }}{{ if $path }}{{ $path | replace "/" "-" }}{{ end }}-route
   namespace: {{ $.Values.project }}
 spec:
   entryPoints:
     - web
     - websecure
   routes:
-    - match: Host(`{{ $domain }}`) 
+    - match: Host(`{{ $domain }}`){{ if $path }} && PathPrefix(`{{ $path }}`){{ end }}
       kind: Rule
       services:
         - name: {{ $app.name }}
           port: {{ $app.port }}
+      {{- if $path }}
+      middlewares:
+        - name: {{ $.Values.project }}-{{ $app.name }}-{{ $path | replace "/" "-" | trimPrefix "-" }}-strip-prefix
+      {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{- range $app := .Values.applications }}
+{{- if $app.git.hash }}
+{{- range $route := $app.routes }}
+{{- $path := regexFind "/.*" $route | default "" }}
+{{- if $path }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ $.Values.project }}-{{ $app.name }}-{{ $path | replace "/" "-" | trimPrefix "-" }}-strip-prefix
+  namespace: {{ $.Values.project }}
+spec:
+  stripPrefix:
+    prefixes:
+      - {{ $path }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
