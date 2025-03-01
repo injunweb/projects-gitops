@@ -8,4 +8,4 @@ applications:
       hash: 2676366e7949654b642af7aa7138002aab4c2839
     port: 80
     routes:
-      - injunweb.com/v1
+      - injunweb.com
