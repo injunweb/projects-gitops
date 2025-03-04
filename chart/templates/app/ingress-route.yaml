@@ -26,23 +26,3 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-
-{{- range $app := .Values.applications }}
-{{- if $app.git.hash }}
-{{- range $route := $app.routes }}
-{{- $path := regexFind "/.*" $route | default "" }}
-{{- if $path }}
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-{{ $path | replace "/" "-" | trimPrefix "-" }}-strip-prefix
-  namespace: {{ $.Values.project }}
-spec:
-  stripPrefix:
-    prefixes:
-      - {{ $path }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
