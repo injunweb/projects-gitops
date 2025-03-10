@@ -5,7 +5,7 @@ applications:
       owner: team-root
       repo: ROOT_BE
       branch: develop
-      hash: 426c084dc87a5d31859893e61017a01bb8384e44
+      hash: 65e5d7f9a1bbff92cf6501e0f77a95386fec174e
     port: 8080
     routes:
       - root-api.ijw.app
