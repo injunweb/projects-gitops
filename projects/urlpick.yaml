@@ -16,7 +16,7 @@ applications:
       repo: urlpick-frontend
       branch: main
       hash: a07583974f18ec2c333b2c98a241525ed2811e36
-    port: 80
+    port: 3000
     routes:
       - url.injun.dev
 databases:
