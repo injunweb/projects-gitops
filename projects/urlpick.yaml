@@ -15,7 +15,7 @@ applications:
       owner: urlpick
       repo: urlpick-frontend
       branch: main
-      hash: 3631f6bedab47f3bd27ebaafdee3f8e9e357e315
+      hash: 02cf1f239bf2c0a1510046c61b45f129f9c0235a
     port: 3000
     routes:
       - url.injun.dev
