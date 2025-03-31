@@ -12,6 +12,8 @@ spec:
     parameters:
       - name: git_sha
         description: "Git commit hash"
+      - name: event_type
+        description: "Event type (ping or push)"
   volumes:
     - name: docker-config
       secret:
@@ -29,6 +31,8 @@ spec:
               parameters:
                 - name: sha
                   value: "{{`{{workflow.parameters.git_sha}}`}}"
+                - name: event_type
+                  value: "{{`{{workflow.parameters.event_type}}`}}"
           - name: update-config
             template: update-config
             dependencies: [build]
@@ -36,11 +40,14 @@ spec:
               parameters:
                 - name: sha
                   value: "{{`{{workflow.parameters.git_sha}}`}}"
+                - name: event_type
+                  value: "{{`{{workflow.parameters.event_type}}`}}"
 
     - name: build-container
       inputs:
         parameters:
           - name: sha
+          - name: event_type
       hostAliases:
         - ip: "192.168.0.200"
           hostnames:
@@ -48,7 +55,7 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
-          - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
+          - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}{{`{{ if eq inputs.parameters.event_type \"push\" }}#{{inputs.parameters.sha}}{{ end }}`}}"
           - "--dockerfile=Dockerfile"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
@@ -74,6 +81,7 @@ spec:
       inputs:
         parameters:
           - name: sha
+          - name: event_type
       container:
         image: curlimages/curl:latest
         command: ["/bin/sh", "-c"]
