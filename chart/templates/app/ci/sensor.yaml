@@ -13,20 +13,20 @@ spec:
     - name: github-dep
       eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
       eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
-      filters:
-        data:
-          - path: body.zen
-            type: string
-            value:
-              - ""
-            comparator: "!="
-            template: "ping"
-          - path: body.ref
-            type: string
-            comparator: "="
-            value:
-              - "refs/heads/{{ $app.git.branch }}"
-            template: "push"
+      # filters:
+      #   data:
+      #     - path: body.zen
+      #       type: string
+      #       value:
+      #         - ""
+      #       comparator: "!="
+      #       template: "ping"
+      #     - path: body.ref
+      #       type: string
+      #       comparator: "="
+      #       value:
+      #         - "refs/heads/{{ $app.git.branch }}"
+      #       template: "push"
   triggers:
     - template:
         name: workflow-trigger
