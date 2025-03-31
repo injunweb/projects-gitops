@@ -13,20 +13,13 @@ spec:
     - name: github-dep
       eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
       eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
-      # filters:
-      #   data:
-      #     - path: body.zen
-      #       type: string
-      #       value:
-      #         - ""
-      #       comparator: "!="
-      #       template: "ping"
-      #     - path: body.ref
-      #       type: string
-      #       comparator: "="
-      #       value:
-      #         - "refs/heads/{{ $app.git.branch }}"
-      #       template: "push"
+      filters:
+        data:
+          - path: body.ref
+            type: string
+            comparator: "="
+            value:
+              - "refs/heads/{{ $app.git.branch }}"
   triggers:
     - template:
         name: workflow-trigger
@@ -42,21 +35,13 @@ spec:
                 arguments:
                   parameters:
                     - name: git_sha
-                    - name: event_type
                 workflowTemplateRef:
                   name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
           parameters:
             - src:
                 dependencyName: github-dep
                 dataKey: body.after
-                value: "latest"
-                dataTemplate: "{{ `{{ if eq .Input.body.zen \"\" }}{{ .Input.body.after }}{{ else }}latest{{ end }}` }}"
               dest: spec.arguments.parameters.0.value
-            - src:
-                dependencyName: github-dep
-                value: "ping"
-                dataTemplate: "{{ `{{ if ne .Input.body.zen \"\" }}ping{{ else }}push{{ end }}` }}"
-              dest: spec.arguments.parameters.1.value
       retryStrategy:
         steps: 3
 {{- end }}
