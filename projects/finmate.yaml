@@ -9,3 +9,9 @@ applications:
     port: 8080
     routes:
       - finmate-api.injun.dev
+databases:
+  - name: db
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
