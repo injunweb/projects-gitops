@@ -1,0 +1,10 @@
+applications:
+  - name: finmate-api
+    git:
+      type: github
+      owner: coehgns
+      repo: FinMate
+      branch: main
+    port: 8080
+    routes:
+      - blog.injun.dev
