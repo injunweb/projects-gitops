@@ -5,7 +5,7 @@ applications:
       owner: coehgns
       repo: FinMate
       branch: main
-      hash: b6e53b96a369334e525fd6961901214fc2a055af
+      hash: ac8d62545b863df2c1315020e510d4d8d43590ee
     port: 8080
     routes:
       - finmate-api.injun.dev
