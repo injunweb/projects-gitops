@@ -8,4 +8,4 @@ applications:
       hash: b6e53b96a369334e525fd6961901214fc2a055af
     port: 8080
     routes:
-      - blog.injun.dev
+      - finmate-api.injun.dev
