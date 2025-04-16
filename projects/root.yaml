@@ -24,7 +24,7 @@ applications:
       owner: team-root
       repo: web-terminal-tools
       branch: main
-      hash: 0e90dbc244394f5a70b079510d79d8fd848bfaae
+      hash: ba875262be47b353f5db1487da4f9d9a69939fc1
     port: 7681
     routes:
       - root-tunnel.ijw.app
