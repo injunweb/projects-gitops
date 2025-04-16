@@ -24,7 +24,6 @@ applications:
       owner: team-root
       repo: web-terminal-tools
       branch: main
-      size: 1Gi
       hash: 0e90dbc244394f5a70b079510d79d8fd848bfaae
     port: 7681
     routes:
