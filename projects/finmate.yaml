@@ -15,6 +15,7 @@ applications:
       owner: team-root
       repo: web-terminal-tools
       branch: main
+      hash: ba875262be47b353f5db1487da4f9d9a69939fc1
     port: 7681
     routes:
       - finmate-tunnel.injun.dev
