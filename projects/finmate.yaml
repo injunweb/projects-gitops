@@ -9,6 +9,15 @@ applications:
     port: 8080
     routes:
       - finmate-api.injun.dev
+  - name: tunnel
+    git:
+      type: github
+      owner: team-root
+      repo: web-terminal-tools
+      branch: main
+    port: 7681
+    routes:
+      - finmate-tunnel.injun.dev
 databases:
   - name: db
     type: mysql
