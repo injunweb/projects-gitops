@@ -5,7 +5,7 @@ applications:
       owner: parktaesu123
       repo: ala
       branch: main
-      hash: 74897ec4ae72897b1c29ae5adcd18d141fdf7fe3
+      hash: 1fa2f35b3b0dc702dcbd965c0a4b984a28c0f584
     port: 8080
     routes:
       - ala-api.injun.dev
