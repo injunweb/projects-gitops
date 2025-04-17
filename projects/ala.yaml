@@ -1,0 +1,16 @@
+applications:
+  - name: ala-api
+    git:
+      type: github
+      owner: parktaesu123
+      repo: ala
+      branch: main
+    port: 8080
+    routes:
+      - ala-api.injun.dev
+databases:
+  - name: db
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
