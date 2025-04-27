@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: blog
       branch: main
-      hash: f8a56c0884cc2d68c57fbda48aa46d6ad4e34032
+      hash: e4ac37e8f62551ed1f7a60ee507811ca3c681231
     port: 80
     routes:
       - blog.injun.dev
