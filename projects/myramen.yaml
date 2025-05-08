@@ -1,0 +1,16 @@
+applications:
+  - name: myramen-be
+    git:
+      type: github
+      owner: myramen
+      repo: be
+      branch: main
+    port: 8080
+    routes:
+      - myramen-api.injun.dev
+databases:
+  - name: db
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
