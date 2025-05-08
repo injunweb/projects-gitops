@@ -5,6 +5,7 @@ applications:
       owner: myramen
       repo: be
       branch: main
+      hash: 33bc97e952c662f89dc03aae2e8cf1c19c828205
     port: 8080
     routes:
       - myramen-api.injun.dev
