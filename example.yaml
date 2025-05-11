@@ -5,7 +5,6 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-      hash: ~
     port: 8000
     routes:
       - custom1.example.com/exam
