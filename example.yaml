@@ -20,24 +20,50 @@ applications:
       - custom2.example.com
 
 databases:
-  - name: mysql
+  # MySQL 8.0 인스턴스
+  # 환경변수:
+  # - DB1_HOST: 데이터베이스 호스트명
+  # - DB1_PORT: 데이터베이스 포트 번호
+  # - DB1_DATABASE: 데이터베이스 이름
+  # - DB1_USER: 데이터베이스 사용자명
+  # - DB1_PASSWORD: 데이터베이스 비밀번호
+  - name: db1
     type: mysql
     version: "8.0"
     port: 3306
     size: 2Gi
 
+  # PostgreSQL 14 인스턴스
+  # 환경변수:
+  # - DB2_HOST: 데이터베이스 호스트명
+  # - DB2_PORT: 데이터베이스 포트 번호
+  # - DB2_DB: 데이터베이스 이름
+  # - DB2_USER: 데이터베이스 사용자명
+  # - DB2_PASSWORD: 데이터베이스 비밀번호
   - name: db2
     type: postgres
     version: "14"
     port: 5432
     size: 20Gi
 
+  # MongoDB 5.0 인스턴스
+  # 환경변수:
+  # - DB3_HOST: 데이터베이스 호스트명
+  # - DB3_PORT: 데이터베이스 포트 번호
+  # - DB3_DB: 데이터베이스 이름
+  # - DB3_USER: 데이터베이스 사용자명
+  # - DB3_PASSWORD: 데이터베이스 비밀번호
   - name: db3
     type: mongo
     version: "5.0"
     port: 27017
     size: 20Gi
 
+  # Redis 6.0 인스턴스
+  # 환경변수:
+  # - DB4_HOST: Redis 호스트명
+  # - DB4_PORT: Redis 포트 번호
+  # - DB4_PASSWORD: Redis 비밀번호
   - name: db4
     type: redis
     version: "6.0"
