@@ -53,8 +53,6 @@ spec:
             secretKeyRef:
               name: {{ $.Values.project }}-{{ $db.name }}-secret
               key: password
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
         {{- else if eq $db.type "mongodb" }}
         env:
         - name: MONGO_INITDB_DATABASE
@@ -76,7 +74,7 @@ spec:
           {{- else if eq $db.type "redis" }}
           mountPath: /data
           {{- else if eq $db.type "postgres" }}
-          mountPath: /var/lib/postgresql/data
+          mountPath: /var/lib/postgresql/data/
           {{- else if eq $db.type "mongodb" }}
           mountPath: /data/db
           {{- end }}
