@@ -20,6 +20,14 @@ spec:
             comparator: "="
             value:
               - "refs/heads/{{ $app.git.branch }}"
+          {{- if not $app.git.hash }}
+          - path: headers.X-GitHub-Event
+            type: string
+            comparator: "="
+            value:
+              - "ping"
+          {{- end }}
+        dataLogicalOperator: "or"
   triggers:
     - template:
         name: workflow-trigger
@@ -35,13 +43,18 @@ spec:
                 arguments:
                   parameters:
                     - name: git_sha
+                      {{- if not $app.git.hash }}
+                      value: "latest"
+                      {{- end }}
                 workflowTemplateRef:
                   name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
           parameters:
+            {{- if $app.git.hash }}
             - src:
                 dependencyName: github-dep
                 dataKey: body.after
               dest: spec.arguments.parameters.0.value
+            {{- end }}
       retryStrategy:
         steps: 3
 {{- end }}

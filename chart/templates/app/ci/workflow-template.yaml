@@ -48,9 +48,15 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
+          {{- if eq "{{`{{inputs.parameters.sha}}`}}" "latest" }}
+          - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}"
+          {{- else }}
           - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
+          {{- end }}
           - "--dockerfile=Dockerfile"
+          {{- if ne "{{`{{inputs.parameters.sha}}`}}" "latest" }}
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
+          {{- end }}
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
           - "--registry-mirror=harbor.injunweb.com/proxy"
           - "--cache=true"
@@ -90,7 +96,11 @@ spec:
                   "action": "apply",
                   "spec": {
                     "git": {
+                      {{- if eq "{{`{{inputs.parameters.sha}}`}}" "latest" }}
+                      "hash": "latest"
+                      {{- else }}
                       "hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
+                      {{- end }}
                     }
                   }
                 }
