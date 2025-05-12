@@ -1,0 +1,23 @@
+applications:
+  - name: server
+    git:
+      type: github
+      owner: verigate
+      repo: verigate-server
+      branch: main
+    port: 8080
+    routes:
+      - verigate-api.injun.dev
+
+databases:
+  - name: postgres
+    type: postgres
+    version: "14"
+    port: 5432
+    size: 1Gi
+
+  - name: redis
+    type: redis
+    version: "6.0"
+    port: 6379
+    size: 1Gi
