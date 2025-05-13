@@ -1,0 +1,10 @@
+applications:
+  - name: frontend
+    git:
+      type: github
+      owner: love-survery
+      repo: frontend
+      branch: main
+    port: 3000
+    routes:
+      - love-survery.injun.dev
