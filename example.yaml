@@ -44,7 +44,7 @@ databases:
     type: postgres
     version: "14"
     port: 5432
-    size: 20Gi
+    size: 2Gi
 
   # MongoDB 5.0 인스턴스
   # 환경변수:
@@ -57,7 +57,7 @@ databases:
     type: mongo
     version: "5.0"
     port: 27017
-    size: 20Gi
+    size: 2Gi
 
   # Redis 6.0 인스턴스
   # 환경변수:
@@ -68,4 +68,4 @@ databases:
     type: redis
     version: "6.0"
     port: 6379
-    size: 20Gi
+    size: 2Gi
