@@ -7,6 +7,8 @@ applications:
       branch: main
       hash: latest
     port: 3000
+    routes:
+      - love-survery.injun.dev
   - name: backend
     git:
       type: github
