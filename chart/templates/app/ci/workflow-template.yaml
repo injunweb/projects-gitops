@@ -36,7 +36,7 @@ spec:
               parameters:
                 - name: sha
                   value: "{{`{{workflow.parameters.git_sha}}`}}"
-
+    
     - name: build-container
       inputs:
         parameters:
@@ -48,13 +48,14 @@ spec:
       container:
         image: gcr.io/kaniko-project/executor:latest
         args:
-          {{- if eq "{{`{{inputs.parameters.sha}}`}}" "latest" }}
+          {{- if not $app.git.hash }}
           - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}"
           {{- else }}
           - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
           {{- end }}
           - "--dockerfile=Dockerfile"
-          {{- if ne "{{`{{inputs.parameters.sha}}`}}" "latest" }}
+          
+          {{- if $app.git.hash }}
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           {{- end }}
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
@@ -75,7 +76,7 @@ spec:
         volumeMounts:
           - name: docker-config
             mountPath: /kaniko/.docker/
-
+    
     - name: update-config
       inputs:
         parameters:
@@ -96,7 +97,7 @@ spec:
                   "action": "apply",
                   "spec": {
                     "git": {
-                      {{- if eq "{{`{{inputs.parameters.sha}}`}}" "latest" }}
+                      {{- if not $app.git.hash }}
                       "hash": "latest"
                       {{- else }}
                       "hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
