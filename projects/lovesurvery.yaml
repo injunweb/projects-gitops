@@ -13,6 +13,7 @@ applications:
       owner: love-survery
       repo: backend
       branch: main
+      hash: latest
     port: 4000
     routes:
       - love-survery-api.injun.dev
