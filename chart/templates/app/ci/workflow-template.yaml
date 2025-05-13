@@ -54,7 +54,6 @@ spec:
           - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
           {{- end }}
           - "--dockerfile=Dockerfile"
-          
           {{- if $app.git.hash }}
           - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
           {{- end }}
