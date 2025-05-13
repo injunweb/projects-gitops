@@ -21,7 +21,7 @@ spec:
             value:
               - "refs/heads/{{ $app.git.branch }}"
           {{- if not $app.git.hash }}
-          - path: headers.X-GitHub-Event
+          - path: body.X-GitHub-Event
             type: string
             comparator: "="
             value:
