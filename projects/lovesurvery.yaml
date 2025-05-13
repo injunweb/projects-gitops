@@ -7,5 +7,18 @@ applications:
       branch: main
       hash: latest
     port: 3000
+  - name: backend
+    git:
+      type: github
+      owner: love-survery
+      repo: backend
+      branch: main
+    port: 4000
     routes:
-      - love-survery.injun.dev
+      - love-survery-api.injun.dev
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
