@@ -15,7 +15,7 @@ applications:
       owner: love-survery
       repo: backend
       branch: main
-      hash: be6aa6fc3a4c821397269efd850a4a6276b98f2f
+      hash: eb37901bfb0b656ee588d5628bf2195a107ec13a
     port: 4000
     routes:
       - love-survery-api.injun.dev
