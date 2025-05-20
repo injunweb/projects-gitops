@@ -5,7 +5,7 @@ applications:
       owner: verigate
       repo: verigate-server
       branch: main
-      hash: 3ef79aab09794430ae0ab40732e7ca2106caaa83
+      hash: eeba92e59fe95ad7bed4f725c0fea39d49d397e2
     port: 8080
     routes:
       - verigate-api.injun.dev
