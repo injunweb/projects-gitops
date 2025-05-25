@@ -9,6 +9,15 @@ applications:
     port: 8080
     routes:
       - verigate-api.injun.dev
+  - name: ui
+    git:
+      type: github
+      owner: verigate
+      repo: verigate-ui
+      branch: main
+    port: 3000
+    routes:
+      - verigate.injun.dev
 databases:
   - name: postgres
     type: postgres
