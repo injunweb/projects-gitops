@@ -15,7 +15,7 @@ applications:
       owner: verigate
       repo: verigate-ui
       branch: main
-      hash: 8d9a01bd58b4e8d5167ebe328a4d811c9ab70e7e
+      hash: 5625882f6861ec839b98b15ff5a3fe7e09fde71c
     port: 3000
     routes:
       - verigate.injun.dev
