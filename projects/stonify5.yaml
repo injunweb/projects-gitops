@@ -15,6 +15,7 @@ applications:
       owner: stonify5
       repo: backend
       branch: master
+      hash: latest
     port: 8080
     routes:
       - server.stonify5.com
