@@ -13,7 +13,7 @@ applications:
       type: github
       owner: stonify5
       repo: backend
-      branch: main
+      branch: master
     port: 8080
     routes:
       - server.stonify5.com
