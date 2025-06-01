@@ -1,0 +1,19 @@
+applications:
+  - name: frontend
+    git:
+      type: github
+      owner: stonify5
+      repo: frontend
+      branch: main
+    port: 80
+    routes:
+      - stonify5.com
+  - name: backend
+    git:
+      type: github
+      owner: stonify5
+      repo: backend
+      branch: main
+    port: 80
+    routes:
+      - server.stonify5.com
