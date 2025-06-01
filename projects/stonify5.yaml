@@ -5,6 +5,7 @@ applications:
       owner: stonify5
       repo: frontend
       branch: main
+      hash: latest
     port: 80
     routes:
       - stonify5.com
