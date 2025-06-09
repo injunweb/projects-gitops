@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: commit-canvas
       branch: main
-      hash: 4cfdd804aa7345f4aaf2e9668a0733339eaa48f4
+      hash: dc5070d02324908a842d87df9009c1474104f6a5
     port: 8080
     routes:
       - commit-canvas.injun.dev
