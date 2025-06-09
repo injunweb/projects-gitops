@@ -8,4 +8,4 @@ applications:
       hash: 59aa4b93ad16e8ff991cd7ac0bcf68bfac890e81
     port: 8080
     routes:
-      - commit-canvas.ijw.app
+      - commit-canvas.injun.dev
