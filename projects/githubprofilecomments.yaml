@@ -8,7 +8,7 @@ applications:
       hash: 187e1f5234b58895f369f87e873f549e03261b0f
     port: 8080
     routes:
-      - comment.ijw.app
+      - github-comment.injun.dev
 databases:
   - name: db
     type: mysql
