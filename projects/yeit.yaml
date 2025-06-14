@@ -1,0 +1,10 @@
+applications:
+  - name: server
+    git:
+      type: github
+      owner: team-yeit
+      repo: server
+      branch: main
+    port: 8080
+    routes:
+      - yeit.ijw.app
