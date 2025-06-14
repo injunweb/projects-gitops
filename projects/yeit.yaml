@@ -5,6 +5,6 @@ applications:
       owner: team-yeit
       repo: server
       branch: main
-    port: 8080
+    port: 8000
     routes:
       - yeit.ijw.app
