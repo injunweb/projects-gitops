@@ -5,7 +5,7 @@ applications:
       owner: team-yeit
       repo: server-v2
       branch: main
-      hash: 61689149d63c9b9081c3c69de29a87195b09ad49
+      hash: 2922fdb655270b6dc5c640b7b4b5d7f9baa6f6c6
     port: 8000
     routes:
       - yeit.ijw.app
