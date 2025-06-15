@@ -1,11 +1,10 @@
 applications:
-  - name: server
+  - name: server-v2
     git:
       type: github
       owner: team-yeit
-      repo: server
+      repo: server-v2
       branch: main
-      hash: 93726be0d8cbaacb2bc4e737fde955161585d8f2
     port: 8000
     routes:
       - yeit.ijw.app
