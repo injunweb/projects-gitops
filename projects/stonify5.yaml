@@ -15,7 +15,7 @@ applications:
       owner: stonify5
       repo: backend
       branch: master
-      hash: 74ce21524990ed3544b76213aa9c0625404ef6ef
+      hash: 312ffcedb7c4681db101e17b3edfb8bd5e772a0c
     port: 8080
     routes:
       - server.stonify5.com
