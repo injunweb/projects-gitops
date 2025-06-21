@@ -5,7 +5,7 @@ applications:
       owner: stonify5
       repo: frontend
       branch: main
-      hash: a433b002bcd00d3873e02228bb51dbfadcd92ebd
+      hash: 44addb2eda1b443d537885f7a2a6c7bff2d3cc07
     port: 80
     routes:
       - stonify5.com
