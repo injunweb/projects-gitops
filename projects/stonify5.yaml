@@ -8,7 +8,7 @@ applications:
       hash: 44addb2eda1b443d537885f7a2a6c7bff2d3cc07
     port: 80
     routes:
-      - stonify5.com/ko/
+      - stonify5.com/ko
   - name: backend
     git:
       type: github
