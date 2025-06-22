@@ -42,10 +42,20 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "sleep 10"]
           ports:
+          {{- if $app.services }}
+          {{- range $service := $app.services }}
+            - containerPort: {{ $service.port }}
+          {{- end }}
+          {{- else }}
             - containerPort: {{ $app.port }}
+          {{- end }}
           readinessProbe:
             tcpSocket:
+            {{- if $app.services }}
+              port: {{ (index $app.services 0).port }}
+            {{- else }}
               port: {{ $app.port }}
+            {{- end }}
             initialDelaySeconds: 20
             periodSeconds: 10
             successThreshold: 3

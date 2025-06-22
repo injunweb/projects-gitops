@@ -6,9 +6,10 @@ applications:
       repo: ala
       branch: main
       hash: 116e8cca8ae940452aeacccc1a2db970240c64fd
-    port: 8080
-    routes:
-      - ala-api.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - ala-api.injun.dev
 databases:
   - name: db
     type: mysql

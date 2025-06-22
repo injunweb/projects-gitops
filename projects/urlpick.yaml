@@ -6,9 +6,10 @@ applications:
       repo: urlpick-api
       branch: main
       hash: 2e833945e9506892321ba2c94bf8956d0c200fcc
-    port: 8080
-    routes:
-      - urlpick-api.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - urlpick-api.injun.dev
   - name: frontend
     git:
       type: github
@@ -16,9 +17,10 @@ applications:
       repo: urlpick-frontend
       branch: main
       hash: 060df536881430fe779a2687bc1f546d19a21913
-    port: 3000
-    routes:
-      - url.injun.dev
+    services:
+      - port: 3000
+        routes:
+          - url.injun.dev
 databases:
   - name: mysql
     type: mysql
