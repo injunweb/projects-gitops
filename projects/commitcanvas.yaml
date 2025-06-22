@@ -6,6 +6,7 @@ applications:
       repo: commit-canvas
       branch: main
       hash: 1026d06f606ab4b572eea63ef2cc569569570442
-    port: 8080
-    routes:
-      - commit-canvas.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - commit-canvas.injun.dev

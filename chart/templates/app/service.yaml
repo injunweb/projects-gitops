@@ -8,8 +8,15 @@ metadata:
   namespace: {{ $.Values.project }}
 spec:
   ports:
+  {{- if $app.services }}
+  {{- range $service := $app.services }}
+  - port: {{ $service.port }}
+    targetPort: {{ $service.port }}
+  {{- end }}
+  {{- else }}
   - port: {{ $app.port }}
     targetPort: {{ $app.port }}
+  {{- end }}
   selector:
     app: {{ $app.name }}-app
 {{- end }}

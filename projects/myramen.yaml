@@ -6,9 +6,10 @@ applications:
       repo: be
       branch: main
       hash: 4ede78ab96c5a97ae2108d68cfbd18c74ce34ffb
-    port: 8080
-    routes:
-      - myramen-api.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - myramen-api.injun.dev
 databases:
   - name: db
     type: mysql

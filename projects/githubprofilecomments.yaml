@@ -6,9 +6,10 @@ applications:
       repo: github-profile-comments
       branch: main
       hash: 99304616104134e06876754035fa2c81c7679fc5
-    port: 8080
-    routes:
-      - github-comment.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - github-comment.injun.dev
 databases:
   - name: db
     type: mysql

@@ -5,9 +5,16 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-    port: 8000
-    routes:
-      - custom1.example.com/exam
+    services:
+      - port: 8000
+        routes:
+          - custom1.example.com/exam
+      - port: 3000
+        routes:
+          - api1.example.com
+      - port: 9000
+        routes:
+          - admin1.example.com
 
   - name: app2
     git:
@@ -15,9 +22,13 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-    port: 5000
-    routes:
-      - custom2.example.com
+    services:
+      - port: 5000
+        routes:
+          - custom2.example.com
+      - port: 5001
+        routes:
+          - api2.example.com
 
 databases:
   # MySQL 8.0 인스턴스

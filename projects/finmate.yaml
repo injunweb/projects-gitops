@@ -6,9 +6,10 @@ applications:
       repo: FinMate
       branch: main
       hash: ac8d62545b863df2c1315020e510d4d8d43590ee
-    port: 8080
-    routes:
-      - finmate-api.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - finmate-api.injun.dev
   - name: tunnel
     git:
       type: github
@@ -16,9 +17,10 @@ applications:
       repo: web-terminal-tools
       branch: main
       hash: ba875262be47b353f5db1487da4f9d9a69939fc1
-    port: 7681
-    routes:
-      - finmate-tunnel.injun.dev
+    services:
+      - port: 7681
+        routes:
+          - finmate-tunnel.injun.dev
 databases:
   - name: db
     type: mysql

@@ -6,9 +6,10 @@ applications:
       repo: verigate-server
       branch: main
       hash: 84ab8c28c6ab1e9c63e8f90d0b18414b97df71f6
-    port: 8080
-    routes:
-      - verigate-api.injun.dev
+    services:
+      - port: 8080
+        routes:
+          - verigate-api.injun.dev
   - name: ui
     git:
       type: github
@@ -16,9 +17,10 @@ applications:
       repo: verigate-ui
       branch: main
       hash: 5625882f6861ec839b98b15ff5a3fe7e09fde71c
-    port: 3000
-    routes:
-      - verigate.injun.dev
+    services:
+      - port: 3000
+        routes:
+          - verigate.injun.dev
 databases:
   - name: postgres
     type: postgres

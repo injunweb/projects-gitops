@@ -6,6 +6,7 @@ applications:
       repo: remote-desktop
       branch: main
       hash: c475769e5b3664ff6365bc16595d3a35a68a6195
-    port: 3000
-    routes:
-      - remote-desktop.injun.dev
+    services:
+      - port: 3000
+        routes:
+          - remote-desktop.injun.dev
