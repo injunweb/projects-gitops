@@ -1,0 +1,22 @@
+applications:
+  - name: server
+    git:
+      type: github
+      owner: hackathonDSM2025
+      repo: server
+      branch: main
+    services:
+      - port: 8080
+        routes:
+          - pastport.ijw.app
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
+  - name: redis
+    type: redis
+    version: "6.0"
+    port: 6379
+    size: 2Gi
