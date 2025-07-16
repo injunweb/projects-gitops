@@ -5,6 +5,7 @@ applications:
       owner: in-jun
       repo: h
       branch: main
+      hash: latest
     services:
       - port: 8080
         routes:
