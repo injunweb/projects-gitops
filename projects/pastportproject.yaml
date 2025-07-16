@@ -9,7 +9,7 @@ applications:
     services:
       - port: 8080
         routes:
-          - p.ijw.app
+          - pastport.ijw.app
 databases:
   - name: mysql
     type: mysql
