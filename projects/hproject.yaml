@@ -1,0 +1,11 @@
+applications:
+  - name: server
+    git:
+      type: github
+      owner: in-jun
+      repo: hproject
+      branch: main
+    services:
+      - port: 8080
+        routes:
+          - ijw.app
