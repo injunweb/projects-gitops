@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: h
       branch: main
-      hash: cccf36ca0cd8c6cc2ba7218b5c03eccf85f9a6d6
+      hash: 86960e9ec2b50a3d0611f5a09c6e3a4963e3bee3
     services:
       - port: 8080
         routes:
