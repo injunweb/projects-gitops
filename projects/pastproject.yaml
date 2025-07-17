@@ -5,7 +5,7 @@ applications:
       owner: hackathonDSM2025
       repo: server
       branch: main
-      hash: c6d1cfcd90aa2188538d0af88c5465ba92931701
+      hash: ee501c04f64d43241328a489e5a22a19309381c5
     services:
       - port: 8080
         routes:
