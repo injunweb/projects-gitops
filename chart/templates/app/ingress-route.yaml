@@ -1,7 +1,7 @@
 {{- range $app := .Values.applications }}
 {{- if $app.git.hash }}
-{{- if $app.services }}
-{{- range $service := $app.services }}
+{{- if $app.endpoints }}
+{{- range $service := $app.endpoints }}
 {{- range $route := $service.routes }}
 {{- $domain := regexFind "^[^/]+" $route }}
 {{- $path := regexFind "/.*" $route | default "" }}
@@ -58,8 +58,8 @@ spec:
 
 {{- range $app := .Values.applications }}
 {{- if $app.git.hash }}
-{{- if $app.services }}
-{{- range $service := $app.services }}
+{{- if $app.endpoints }}
+{{- range $service := $app.endpoints }}
 {{- range $route := $service.routes }}
 {{- $path := regexFind "/.*" $route | default "" }}
 {{- if $path }}

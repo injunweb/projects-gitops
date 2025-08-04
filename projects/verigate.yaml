@@ -6,7 +6,7 @@ applications:
       repo: verigate-server
       branch: main
       hash: 84ab8c28c6ab1e9c63e8f90d0b18414b97df71f6
-    services:
+    endpoints:
       - port: 8080
         routes:
           - verigate-api.injun.dev
@@ -17,7 +17,7 @@ applications:
       repo: verigate-ui
       branch: main
       hash: 5625882f6861ec839b98b15ff5a3fe7e09fde71c
-    services:
+    endpoints:
       - port: 3000
         routes:
           - verigate.injun.dev

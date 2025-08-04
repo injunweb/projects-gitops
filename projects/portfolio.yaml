@@ -6,7 +6,7 @@ applications:
       repo: portfolio
       branch: main
       hash: 15ce159db795481c10088993b64f955013eb6866
-    services:
+    endpoints:
       - port: 80
         routes:
           - injun.dev

@@ -6,7 +6,7 @@ applications:
       repo: frontend
       branch: main
       hash: 44addb2eda1b443d537885f7a2a6c7bff2d3cc07
-    services:
+    endpoints:
       - port: 80
         routes:
           - stonify5.com
@@ -17,7 +17,7 @@ applications:
       repo: backend
       branch: master
       hash: 6d29d4c5f332d3a8c097b5d358ca355d5ec7f1c6
-    services:
+    endpoints:
       - port: 8080
         routes:
           - server.stonify5.com
