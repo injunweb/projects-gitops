@@ -42,8 +42,8 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "sleep 10"]
           ports:
-          {{- if $app.services }}
-          {{- range $service := $app.services }}
+          {{- if $app.endpoints }}
+          {{- range $service := $app.endpoints }}
             - containerPort: {{ $service.port }}
           {{- end }}
           {{- else }}
@@ -51,8 +51,8 @@ spec:
           {{- end }}
           readinessProbe:
             tcpSocket:
-            {{- if $app.services }}
-              port: {{ (index $app.services 0).port }}
+            {{- if $app.endpoints }}
+              port: {{ (index $app.endpoints 0).port }}
             {{- else }}
               port: {{ $app.port }}
             {{- end }}

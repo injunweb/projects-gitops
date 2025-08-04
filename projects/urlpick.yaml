@@ -6,7 +6,7 @@ applications:
       repo: urlpick-api
       branch: main
       hash: 2e833945e9506892321ba2c94bf8956d0c200fcc
-    services:
+    endpoints:
       - port: 8080
         routes:
           - urlpick-api.injun.dev
@@ -17,7 +17,7 @@ applications:
       repo: urlpick-frontend
       branch: main
       hash: 060df536881430fe779a2687bc1f546d19a21913
-    services:
+    endpoints:
       - port: 3000
         routes:
           - url.injun.dev

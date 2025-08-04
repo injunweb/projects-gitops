@@ -5,7 +5,7 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-    services:
+    endpoints:
       - port: 8000
         routes:
           - custom1.example.com/exam
@@ -22,7 +22,7 @@ applications:
       owner: example-org
       repo: custom-app
       branch: develop
-    services:
+    endpoints:
       - port: 5000
         routes:
           - custom2.example.com
