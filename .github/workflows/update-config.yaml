@@ -7,10 +7,9 @@ on:
 jobs:
   handle-request:
     runs-on: ubuntu-latest
-    concurrency:
-      group: config-update
-      cancel-in-progress: false
     steps:
+      - uses: ahmadnassri/action-workflow-queue@v1
+
       - uses: actions/checkout@v3
 
       - name: Install yq
