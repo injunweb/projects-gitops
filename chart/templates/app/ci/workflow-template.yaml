@@ -61,6 +61,8 @@ spec:
           - "--registry-mirror=harbor.injunweb.com/proxy"
           - "--cache=true"
           - "--cache-repo=harbor.injunweb.com/injunweb/cache"
+          - "--snapshot-mode=redo"
+          - "--use-new-run=true"
         env:
           - name: GIT_USERNAME
             valueFrom:
