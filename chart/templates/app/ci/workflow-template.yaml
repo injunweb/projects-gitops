@@ -20,7 +20,7 @@ spec:
           - key: .dockerconfigjson
             path: config.json
   templates:
-    - name: build
+    - name: ci
       dag:
         tasks:
           - name: build
