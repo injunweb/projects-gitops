@@ -1,0 +1,17 @@
+applications:
+  - name: backend
+    git:
+      type: github
+      owner: kiac-local-info-viz
+      repo: backend
+      branch: main
+    endpoints:
+      - port: 8080
+        routes:
+          - kiac-local-info-viz-backend.ijw.app
+databases:
+  - name: postgres
+    type: postgres
+    image: postgres:17.5
+    port: 5432
+    size: 1Gi
