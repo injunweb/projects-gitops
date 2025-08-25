@@ -7,7 +7,7 @@ applications:
       branch: main
       hash: latest
     endpoints:
-      - port: 8080
+      - port: 8000
         routes:
           - kiac-local-info-viz-backend.ijw.app
 databases:
