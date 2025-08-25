@@ -12,6 +12,6 @@ applications:
 databases:
   - name: postgres
     type: postgres
-    image: "17.5"
+    version: "17.5"
     port: 5432
     size: 1Gi
