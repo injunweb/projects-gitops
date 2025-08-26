@@ -10,6 +10,16 @@ applications:
       - port: 8000
         routes:
           - kiac-local-info-viz-backend.ijw.app
+  - name: frontend
+    git:
+      type: github
+      owner: kiac-local-info-viz
+      repo: frontend
+      branch: main
+    endpoints:
+      - port: 80
+        routes:
+          - kiac-local-info-viz.ijw.app
 databases:
   - name: postgres
     type: postgres
