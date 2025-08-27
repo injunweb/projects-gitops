@@ -29,18 +29,17 @@ spec:
             template: fetch-latest-commit-sha
             when: "{{`{{workflow.parameters.github-event-type}}`}} != 'push'"
 
-          - name: create-check-run-start
-            template: create-check-run
+          - name: commit-status-start
+            template: commit-status
+            depends: "(get-latest-sha.Succeeded || get-latest-sha.Skipped)"
             arguments:
               parameters:
-                - name: status
-                  value: "in_progress"
-                - name: conclusion
-                  value: ""
-                - name: title
-                  value: "빌드 진행 중"
-                - name: summary
+                - name: state
+                  value: "pending"
+                - name: description
                   value: "{{ $app.name }} 애플리케이션 빌드를 시작합니다"
+                - name: context
+                  value: "ci/{{ $.Values.project }}-{{ $app.name }}"
                 - name: sha
                   value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
@@ -52,37 +51,33 @@ spec:
                 - name: sha
                   value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
-          - name: check-run-build-success
-            template: update-check-run
-            depends: "build-container.Succeeded && create-check-run-start.Succeeded"
+          - name: commit-status-build-success
+            template: commit-status
+            depends: "build-container.Succeeded"
             arguments:
               parameters:
-                - name: check-run-id
-                  value: "{{`{{tasks.create-check-run-start.outputs.parameters.check-run-id}}`}}"
-                - name: status
-                  value: "in_progress"
-                - name: conclusion
-                  value: ""
-                - name: title
-                  value: "빌드 완료 - 배포 준비 중"
-                - name: summary
-                  value: "{{ $app.name }} 빌드가 성공적으로 완료되었습니다. 배포를 준비하고 있습니다"
+                - name: state
+                  value: "pending"
+                - name: description
+                  value: "{{ $app.name }} 빌드 완료 - 배포 준비 중"
+                - name: context
+                  value: "ci/{{ $.Values.project }}-{{ $app.name }}"
+                - name: sha
+                  value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
-          - name: check-run-build-failed
-            template: update-check-run
-            depends: "build-container.Failed && create-check-run-start.Succeeded"
+          - name: commit-status-build-failed
+            template: commit-status
+            depends: "build-container.Failed"
             arguments:
               parameters:
-                - name: check-run-id
-                  value: "{{`{{tasks.create-check-run-start.outputs.parameters.check-run-id}}`}}"
-                - name: status
-                  value: "completed"
-                - name: conclusion
+                - name: state
                   value: "failure"
-                - name: title
-                  value: "빌드 실패"
-                - name: summary
-                  value: "{{ $app.name }} 빌드 과정에서 오류가 발생했습니다. 로그를 확인해주세요"
+                - name: description
+                  value: "{{ $app.name }} 빌드 과정에서 오류가 발생했습니다"
+                - name: context
+                  value: "ci/{{ $.Values.project }}-{{ $app.name }}"
+                - name: sha
+                  value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
           - name: update-config
             template: update-config
@@ -92,37 +87,33 @@ spec:
                 - name: sha
                   value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
-          - name: check-run-gitops-success
-            template: update-check-run
-            depends: "update-config.Succeeded && create-check-run-start.Succeeded"
+          - name: commit-status-success
+            template: commit-status
+            depends: "update-config.Succeeded"
             arguments:
               parameters:
-                - name: check-run-id
-                  value: "{{`{{tasks.create-check-run-start.outputs.parameters.check-run-id}}`}}"
-                - name: status
-                  value: "completed"
-                - name: conclusion
+                - name: state
                   value: "success"
-                - name: title
-                  value: "배포 트리거 성공"
-                - name: summary
-                  value: "{{ $app.name }} 빌드 및 배포 트리거가 성공적으로 완료되었습니다"
+                - name: description
+                  value: "{{ $app.name }} 빌드 및 배포 트리거 성공"
+                - name: context
+                  value: "ci/{{ $.Values.project }}-{{ $app.name }}"
+                - name: sha
+                  value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
-          - name: check-run-gitops-failed
-            template: update-check-run
-            depends: "update-config.Failed && create-check-run-start.Succeeded"
+          - name: commit-status-failed
+            template: commit-status
+            depends: "update-config.Failed"
             arguments:
               parameters:
-                - name: check-run-id
-                  value: "{{`{{tasks.create-check-run-start.outputs.parameters.check-run-id}}`}}"
-                - name: status
-                  value: "completed"
-                - name: conclusion
+                - name: state
                   value: "failure"
-                - name: title
-                  value: "배포 트리거 실패"
-                - name: summary
-                  value: "{{ $app.name }} 배포 트리거 과정에서 오류가 발생했습니다. 설정을 확인해주세요"
+                - name: description
+                  value: "{{ $app.name }} 배포 트리거 과정에서 오류가 발생했습니다"
+                - name: context
+                  value: "ci/{{ $.Values.project }}-{{ $app.name }}"
+                - name: sha
+                  value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
     - name: fetch-latest-commit-sha
       container:
@@ -150,14 +141,12 @@ spec:
             valueFrom:
               path: /tmp/commit_sha.txt
     
-    - name: create-check-run
+    - name: commit-status
       inputs:
         parameters:
-          - name: status
-          - name: conclusion
-            value: ""
-          - name: title
-          - name: summary
+          - name: state
+          - name: description
+          - name: context
           - name: sha
       container:
         image: alpine:3.18
@@ -167,71 +156,18 @@ spec:
             set -e
             apk add --no-cache curl jq
     
-            CHECK_RUN_ID=$(curl -s -X POST \
+            curl -s -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github+json" \
               -H "Content-Type: application/json" \
               -d '{
-                "name": "{{ $.Values.project }}-{{ $app.name }} CI",
-                "head_sha": "{{`{{inputs.parameters.sha}}`}}",
-                "status": "{{`{{inputs.parameters.status}}`}}",
-                "output": {
-                  "title": "{{`{{inputs.parameters.title}}`}}",
-                  "summary": "{{`{{inputs.parameters.summary}}`}}"
-                }
+                "state": "{{`{{inputs.parameters.state}}`}}",
+                "description": "{{`{{inputs.parameters.description}}`}}",
+                "context": "{{`{{inputs.parameters.context}}`}}"
               }' \
-              "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/check-runs" \
-              | jq -r '.id')
-            echo "$CHECK_RUN_ID" > /tmp/check_run_id.txt
-        env:
-          - name: GITHUB_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.project }}-github-access-secret
-                key: token
-      outputs:
-        parameters:
-          - name: check-run-id
-            valueFrom:
-              path: /tmp/check_run_id.txt
-
-    - name: update-check-run
-      inputs:
-        parameters:
-          - name: check-run-id
-          - name: status
-          - name: conclusion
-            value: ""
-          - name: title
-          - name: summary
-      container:
-        image: alpine:3.18
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            set -e
-            apk add --no-cache curl jq
+              "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/statuses/{{`{{inputs.parameters.sha}}`}}"
             
-            CONCLUSION_JSON=""
-            if [ "{{`{{inputs.parameters.conclusion}}`}}" != "" ]; then
-              CONCLUSION_JSON='"conclusion": "{{`{{inputs.parameters.conclusion}}`}}",'
-            fi
-            
-            curl -s -X PATCH \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -H "Content-Type: application/json" \
-              -d "{
-                \"status\": \"{{`{{inputs.parameters.status}}`}}\",
-                $CONCLUSION_JSON
-                \"output\": {
-                  \"title\": \"{{`{{inputs.parameters.title}}`}}\",
-                  \"summary\": \"{{`{{inputs.parameters.summary}}`}}\"
-                }
-              }" \
-              "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/check-runs/{{`{{inputs.parameters.check-run-id}}`}}"
-            
-            echo "Check run updated successfully"
+            echo "Commit status updated: {{`{{inputs.parameters.state}}`}} - {{`{{inputs.parameters.description}}`}}"
         env:
           - name: GITHUB_TOKEN
             valueFrom:
