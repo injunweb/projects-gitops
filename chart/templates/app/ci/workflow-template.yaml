@@ -149,13 +149,10 @@ spec:
           - name: context
           - name: sha
       container:
-        image: alpine:3.18
+        image: curlimages/curl:latest
         command: ["/bin/sh", "-c"]
         args:
           - |
-            set -e
-            apk add --no-cache curl jq
-    
             curl -s -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -H "Accept: application/vnd.github+json" \
@@ -166,8 +163,6 @@ spec:
                 "context": "{{`{{inputs.parameters.context}}`}}"
               }' \
               "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/statuses/{{`{{inputs.parameters.sha}}`}}"
-            
-            echo "Commit status updated: {{`{{inputs.parameters.state}}`}} - {{`{{inputs.parameters.description}}`}}"
         env:
           - name: GITHUB_TOKEN
             valueFrom:
@@ -219,7 +214,6 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            echo "[CONFIG] Updating gitops repository..."
             curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
               -H "Accept: application/vnd.github.v3+json" \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
