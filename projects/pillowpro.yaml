@@ -8,7 +8,7 @@ applications:
     endpoints:
       - port: 3000
         routes:
-          - pillow.jiw.app
+          - pillow.ijw.app
 databases:
   - name: mysql
     type: mysql
