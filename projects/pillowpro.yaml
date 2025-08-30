@@ -1,0 +1,22 @@
+applications:
+  - name: server
+    git:
+      type: github
+      owner: pillowpro
+      repo: 2025ESWContest_free_1150_DREAMERS_Server
+      branch: main
+    endpoints:
+      - port: 3000
+        routes:
+          - pillow.jiw.app
+databases:
+  - name: mysql
+    type: mysql
+    version: "8.0"
+    port: 3306
+    size: 1Gi
+  - name: redis
+    type: redis
+    version: "6.0"
+    port: 6379
+    size: 1Gi
