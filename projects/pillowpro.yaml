@@ -5,7 +5,7 @@ applications:
       owner: pillowpro
       repo: 2025ESWContest_free_1150_DREAMERS_Server
       branch: main
-      hash: 47f93d67855d394de6aa402deee7f0872bbaa587
+      hash: 7a23ec458b9988b9622ac5c64d9f16e23fdab0fa
     endpoints:
       - port: 3000
         routes:
