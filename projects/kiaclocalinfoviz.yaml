@@ -27,5 +27,6 @@ applications:
       owner: kiac-local-info-viz
       repo: postgresql
       branch: main
+      hash: a0c410e337f683f60b7796d6b977a750ffda39a2
     endpoints:
       - port: 5432
