@@ -21,9 +21,11 @@ applications:
       - port: 80
         routes:
           - kiac-local-info-viz.ijw.app
-databases:
   - name: postgres
-    type: postgres
-    version: "17.5"
-    port: 5432
-    size: 1Gi
+    git:
+      type: github
+      owner: kiac-local-info-viz
+      repo: postgresql
+      branch: main
+    endpoints:
+      - port: 5432
