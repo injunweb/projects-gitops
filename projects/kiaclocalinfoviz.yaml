@@ -5,7 +5,7 @@ applications:
       owner: kiac-local-info-viz
       repo: backend
       branch: main
-      hash: 7f908f3d3b3be2d6611dce856b7d2313cca67df5
+      hash: 2fac956ce155ee92fdbc9244f595079f55ea55af
     endpoints:
       - port: 8000
         routes:
