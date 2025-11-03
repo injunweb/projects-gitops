@@ -18,6 +18,8 @@ spec:
       app: {{ $app.name }}-app
   template:
     metadata:
+      annotations:
+        profiles.grafana.com/cpu.ebpf.enabled: "true"
       labels:
         app: {{ $app.name }}-app
     spec:
