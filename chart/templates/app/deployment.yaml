@@ -19,9 +19,9 @@ spec:
   template:
     metadata:
       annotations:
-        # profiles.grafana.com/cpu.ebpf.enabled: "true"
-        # profiles.grafana.com/service_repository: "https://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}"
-        # profiles.grafana.com/service_git_ref: "{{ $app.git.hash }}"
+        profiles.grafana.com/cpu.ebpf.enabled: "true"
+        profiles.grafana.com/service_repository: "https://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}"
+        profiles.grafana.com/service_git_ref: "{{ $app.git.hash }}"
       labels:
         app.kubernetes.io/name: {{ $app.name }}-app
         app.kubernetes.io/instance: {{ $.Values.project }}
