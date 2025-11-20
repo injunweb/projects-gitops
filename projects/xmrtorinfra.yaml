@@ -14,7 +14,7 @@ applications:
       owner: xmr-tor-infra
       repo: server-proxy
       branch: main
-      hash: 8aaccf55179f3dbf5624eab196f3403b35643a4b
+      hash: 8e477d999f3a8afa642236b96dd4f7ab66554cf6
     endpoints:
       - port: 3333
       - port: 8080
