@@ -19,4 +19,4 @@ applications:
       - port: 3333
       - port: 8080
         routes:
-          - xmr-proxy.injun.dev
+          - xmrig-proxy.injun.dev
