@@ -48,20 +48,12 @@ spec:
               exec:
                 command: ["/bin/sh", "-c", "sleep 10"]
           ports:
-          {{- if $app.endpoints }}
           {{- range $service := $app.endpoints }}
             - containerPort: {{ $service.port }}
           {{- end }}
-          {{- else }}
-            - containerPort: {{ $app.port }}
-          {{- end }}
           readinessProbe:
             tcpSocket:
-            {{- if $app.endpoints }}
               port: {{ (index $app.endpoints 0).port }}
-            {{- else }}
-              port: {{ $app.port }}
-            {{- end }}
             initialDelaySeconds: 20
             periodSeconds: 10
             successThreshold: 3
