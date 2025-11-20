@@ -5,7 +5,7 @@ applications:
       owner: xmr-tor-infra
       repo: server-tor
       branch: main
-      hash: 0019ebad9397af22cf54ab40ab8b3ebd8806a1dc
+      hash: 34dc51e8aa95838ca60e5258bb1b500192ae4a86
     endpoints:
       - port: 9050
   - name: proxy
