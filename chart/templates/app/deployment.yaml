@@ -23,6 +23,7 @@ spec:
         profiles.grafana.com/service_repository: "https://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}"
         profiles.grafana.com/service_git_ref: "{{ $app.git.hash }}"
       labels:
+        app: {{ $app.name }}-app
         app.kubernetes.io/name: {{ $app.name }}-app
         app.kubernetes.io/instance: {{ $.Values.project }}
     spec:
