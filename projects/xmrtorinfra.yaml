@@ -1,0 +1,20 @@
+applications:
+  - name: tor
+    git:
+      type: github
+      owner: xmr-tor-infra
+      repo: server-tor
+      branch: main
+    endpoints:
+      - port: 9050
+  - name: proxy
+    git:
+      type: github
+      owner: xmr-tor-infra
+      repo: server-proxy
+      branch: main
+    endpoints:
+      - port: 3333
+      - port: 8080
+        routes:
+          - xmr-proxy.injun.dev
