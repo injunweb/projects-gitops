@@ -13,5 +13,5 @@ spec:
   method: kubernetes
   mount: kubernetes
   kubernetes:
-    role: injunweb
+    role: app
     serviceAccount: {{ $.Values.project }}-vault-sa
