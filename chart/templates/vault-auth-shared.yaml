@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $.Values.project }}-vault-sa-shared
+  namespace: {{ $.Values.project }}
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: {{ $.Values.project }}-vault-auth-shared
+  namespace: {{ $.Values.project }}
+spec:
+  method: kubernetes
+  mount: kubernetes
+  kubernetes:
+    role: shared
+    serviceAccount: {{ $.Values.project }}-vault-sa-shared
