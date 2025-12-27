@@ -22,13 +22,12 @@ spec:
         repoURL: https://github.com/injunweb/projects-gitops.git
         targetRevision: HEAD
         path: chart
-        plugin:
-          name: argocd-vault-plugin-helm
-          env:
-            - name: HELM_ARGS
-              value: >-
-                -f ../projects/{{.path.filename}}
-                --set project={{.path.filenameNormalized | trimSuffix ".yaml"}}
+        helm:
+          valueFiles:
+            - ../projects/{{.path.filename}}
+          parameters:
+            - name: project
+              value: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.filenameNormalized | trimSuffix ".yaml"}}'
