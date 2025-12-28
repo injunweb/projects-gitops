@@ -1,0 +1,35 @@
+{{- range $app := .Values.applications }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $app.name }}-webhook-httproute
+  namespace: {{ $.Values.project }}
+  labels:
+    app.kubernetes.io/name: {{ $app.name | quote }}
+    app.kubernetes.io/instance: {{ $app.name | quote }}
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: ci-webhook-route
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external-gateway
+      namespace: gateway
+      sectionName: http
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external-gateway
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - webhook.injunweb.com
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /{{ $.Values.project }}-{{ $app.name }}
+      backendRefs:
+        - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-eventsource-svc
+          port: 12000
+{{- end }}

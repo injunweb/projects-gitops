@@ -1,0 +1,50 @@
+{{- range $app := .Values.applications }}
+{{- if $app.git.hash }}
+{{- range $service := $app.endpoints }}
+{{- range $route := $service.routes }}
+{{- $domain := regexFind "^[^/]+" $route }}
+{{- $path := regexFind "/.*" $route | default "/" }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ $app.name }}-{{ $service.port }}-{{ $domain | replace "." "-" }}{{ if ne $path "/" }}{{ $path | replace "/" "-" }}{{ end }}-httproute
+  namespace: {{ $.Values.project }}
+  labels:
+    app.kubernetes.io/name: {{ $app.name | quote }}
+    app.kubernetes.io/instance: {{ $app.name | quote }}
+    app.kubernetes.io/managed-by: Helm
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external-gateway
+      namespace: gateway
+      sectionName: http
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external-gateway
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - {{ $domain }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: {{ $path }}
+      {{- if ne $path "/" }}
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: ""
+      {{- end }}
+      backendRefs:
+        - name: {{ $app.name }}
+          port: {{ $service.port }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
