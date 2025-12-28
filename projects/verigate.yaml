@@ -21,7 +21,7 @@ applications:
       - port: 3000
         routes:
           - verigate.injun.dev
-databases:
+addons:
   - name: postgres
     type: postgres
     version: "14"

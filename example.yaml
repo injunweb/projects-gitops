@@ -30,7 +30,7 @@ applications:
         routes:
           - api2.example.com
 
-databases:
+addons:
   # MySQL 8.0 인스턴스
   # 환경변수:
   # - DB1_HOST: 데이터베이스 호스트명

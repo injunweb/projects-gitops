@@ -21,7 +21,7 @@ applications:
       - port: 3000
         routes:
           - url.injun.dev
-databases:
+addons:
   - name: mysql
     type: mysql
     version: "8.0"
