@@ -62,7 +62,7 @@ spec:
                 name: {{ $.Values.project }}-{{ $app.name }}-secret
                 optional: true
           env:
-            {{- range $db := $.Values.databases }}
+            {{- range $db := $.Values.addons }}
             {{- if eq $db.type "mysql" }}
             - name: {{ $db.name | upper }}_HOST
               value: {{ $db.name }}

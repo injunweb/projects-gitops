@@ -1,4 +1,4 @@
-{{- range $db := .Values.databases }}
+{{- range $db := .Values.addons }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet

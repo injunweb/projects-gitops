@@ -10,7 +10,7 @@ applications:
       - port: 8080
         routes:
           - github-comment.injun.dev
-databases:
+addons:
   - name: db
     type: mysql
     version: "8.0"
