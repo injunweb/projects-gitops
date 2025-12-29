@@ -116,19 +116,19 @@ spec:
                   value: "{{`{{= workflow.parameters['github-event-type'] == 'push' ? workflow.parameters['github-sha'] : tasks['get-latest-sha'].outputs.parameters['commit-sha'] }}`}}"
 
     - name: fetch-latest-commit-sha
-      container:
+      script:
         image: alpine:3.18
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            set -e
-            apk add --no-cache curl jq
-    
-            COMMIT_SHA=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/branches/{{ $app.git.branch }}" \
-              | jq -r '.commit.sha')
-            echo "$COMMIT_SHA" > /tmp/commit_sha.txt
+        imagePullPolicy: IfNotPresent
+        command: [sh]
+        source: |
+          set -e
+          apk add --no-cache curl jq
+
+          COMMIT_SHA=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/branches/{{ $app.git.branch }}" \
+            | jq -r '.commit.sha')
+          echo "$COMMIT_SHA" > /tmp/commit_sha.txt
         env:
           - name: GITHUB_TOKEN
             valueFrom:
@@ -148,21 +148,21 @@ spec:
           - name: description
           - name: context
           - name: sha
-      container:
+      script:
         image: curlimages/curl:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            curl -s -X POST \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -H "Content-Type: application/json" \
-              -d '{
-                "state": "{{`{{inputs.parameters.state}}`}}",
-                "description": "{{`{{inputs.parameters.description}}`}}",
-                "context": "{{`{{inputs.parameters.context}}`}}"
-              }' \
-              "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/statuses/{{`{{inputs.parameters.sha}}`}}"
+        imagePullPolicy: IfNotPresent
+        command: [sh]
+        source: |
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "state": "{{`{{inputs.parameters.state}}`}}",
+              "description": "{{`{{inputs.parameters.description}}`}}",
+              "context": "{{`{{inputs.parameters.context}}`}}"
+            }' \
+            "https://api.github.com/repos/{{ $app.git.owner }}/{{ $app.git.repo }}/statuses/{{`{{inputs.parameters.sha}}`}}"
         env:
           - name: GITHUB_TOKEN
             valueFrom:
@@ -174,61 +174,74 @@ spec:
       inputs:
         parameters:
           - name: sha
+      volumes:
+        - name: docker-config
+          secret:
+            secretName: registry-secret
+            items:
+              - key: .dockerconfigjson
+                path: config.json
       hostAliases:
         - ip: "192.168.0.200"
           hostnames:
             - "harbor.injunweb.com"
-      container:
-        image: gcr.io/kaniko-project/executor:latest
-        args:
-          - "--context=git://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#refs/heads/{{ $app.git.branch }}#{{`{{inputs.parameters.sha}}`}}"
-          - "--dockerfile=Dockerfile"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:{{`{{inputs.parameters.sha}}`}}"
-          - "--destination=harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}:latest"
-          - "--registry-mirror=harbor.injunweb.com/proxy"
-          - "--cache=true"
-          - "--cache-repo=harbor.injunweb.com/injunweb/cache"
-          - "--snapshot-mode=redo"
-          - "--use-new-run=true"
+      script:
+        image: docker:cli
+        imagePullPolicy: IfNotPresent
+        command: [sh]
+        source: |
+          set -e
+
+          GIT_SHA="{{`{{inputs.parameters.sha}}`}}"
+          IMAGE="harbor.injunweb.com/injunweb/{{ $.Values.project }}-{{ $app.name }}"
+          GIT_CONTEXT="https://github.com/{{ $app.git.owner }}/{{ $app.git.repo }}.git#${GIT_SHA}"
+
+          docker buildx create --name builder --driver remote tcp://buildkit.buildkit.svc.cluster.local:1234 --use
+
+          GIT_AUTH_TOKEN="${GITHUB_TOKEN}" docker buildx build -f Dockerfile \
+            --secret id=GIT_AUTH_TOKEN \
+            -t "${IMAGE}:latest" -t "${IMAGE}:${GIT_SHA}" \
+            --platform linux/amd64 --progress plain --provenance false --sbom false \
+            --output type=image,compression=zstd,compression-level=3,oci-mediatypes=true,push=true \
+            "${GIT_CONTEXT}"
         env:
-          - name: GIT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: {{ $.Values.project }}-github-access-secret
-                key: username
-          - name: GIT_PASSWORD
+          - name: GITHUB_TOKEN
             valueFrom:
               secretKeyRef:
                 name: {{ $.Values.project }}-github-access-secret
                 key: token
+          - name: DOCKER_CONFIG
+            value: /docker-config
+          - name: BUILDX_CONFIG
+            value: /tmp/buildx
         volumeMounts:
           - name: docker-config
-            mountPath: /kaniko/.docker/
+            mountPath: /docker-config
     
     - name: update-config
       inputs:
         parameters:
           - name: sha
-      container:
+      script:
         image: curlimages/curl:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
-              -H "Accept: application/vnd.github.v3+json" \
-              -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -d '{
-                "event_type": "config-api",
-                "client_payload": {
-                  "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
-                  "action": "apply",
-                  "spec": {
-                    "git": {
-                      "hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
-                    }
+        imagePullPolicy: IfNotPresent
+        command: [sh]
+        source: |
+          curl -X POST https://api.github.com/repos/injunweb/projects-gitops/dispatches \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -d '{
+              "event_type": "config-api",
+              "client_payload": {
+                "path": "projects/{{$.Values.project}}/applications/{{$app.name}}",
+                "action": "apply",
+                "spec": {
+                  "git": {
+                    "hash": "'"{{`{{inputs.parameters.sha}}`}}"'"
                   }
                 }
-              }'
+              }
+            }'
         env:
           - name: GITHUB_TOKEN
             valueFrom:
