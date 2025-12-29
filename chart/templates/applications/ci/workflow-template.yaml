@@ -181,10 +181,6 @@ spec:
             items:
               - key: .dockerconfigjson
                 path: config.json
-      hostAliases:
-        - ip: "192.168.0.200"
-          hostnames:
-            - "harbor.injunweb.com"
       script:
         image: docker:cli
         imagePullPolicy: IfNotPresent
