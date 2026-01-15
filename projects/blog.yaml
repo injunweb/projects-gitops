@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: blog
       branch: main
-      hash: daf7e2493378752103a3fb9ef286d5d241b8e54f
+      hash: 7dffd8af5726420864f13eb9eb65be5a3b980f7a
     endpoints:
       - port: 80
         routes:
