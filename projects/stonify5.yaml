@@ -9,7 +9,7 @@ applications:
     endpoints:
       - port: 80
         routes:
-          - stonify5.com
+          - stonify5.injun.dev
   - name: backend
     git:
       type: github
@@ -20,4 +20,4 @@ applications:
     endpoints:
       - port: 8080
         routes:
-          - server.stonify5.com
+          - stonify5-server.injun.dev
