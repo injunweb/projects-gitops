@@ -16,7 +16,7 @@ applications:
       owner: urlpick
       repo: urlpick-frontend
       branch: main
-      hash: 060df536881430fe779a2687bc1f546d19a21913
+      hash: b10fa34cfb56108f6fc17eacdc85b8698ea4b055
     endpoints:
       - port: 3000
         routes:
