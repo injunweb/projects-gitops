@@ -5,7 +5,7 @@ applications:
       owner: urlpick
       repo: urlpick-api
       branch: main
-      hash: 2e833945e9506892321ba2c94bf8956d0c200fcc
+      hash: c06b83cf134ebcfd06682767699bda9ca72bc233
     endpoints:
       - port: 8080
         routes:
