@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: portfolio
       branch: main
-      hash: 8d5e67bf1e93be10c12694a6fc1f4feb7f32273c
+      hash: d78bea3809070de00d742251f276cfec5706a79b
     endpoints:
       - port: 80
         routes:
