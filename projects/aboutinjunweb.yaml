@@ -5,7 +5,7 @@ applications:
       owner: injunweb
       repo: about-injunweb
       branch: main
-      hash: 8c81636dc67d32f56e308265185034da00641ba7
+      hash: d9f8cf82c317e4101786e858b7270da43459b003
     endpoints:
       - port: 80
         routes:
