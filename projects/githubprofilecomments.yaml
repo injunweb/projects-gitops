@@ -12,7 +12,7 @@ applications:
           - github-comment.injun.dev
 addons:
   - name: db
-    type: mysql
-    version: "8.0"
-    port: 3306
+    type: postgres
+    version: "16"
+    port: 5432
     size: 1Gi
