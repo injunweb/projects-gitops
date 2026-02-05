@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: github-profile-comments
       branch: main
-      hash: a88af31194f6c7ac02d73a39e8c8c3313b8fa830
+      hash: 74f05aa474be3c8bd14cde9b6894415a0c6ef94e
     endpoints:
       - port: 8080
         routes:
