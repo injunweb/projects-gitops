@@ -30,6 +30,6 @@ spec:
             type: Exact
             value: /{{ $.Values.project }}-{{ $app.name }}
       backendRefs:
-        - name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource-eventsource-svc
+        - name: {{ $app.name }}-gh-webhook-eventsource-svc
           port: 12000
 {{- end }}

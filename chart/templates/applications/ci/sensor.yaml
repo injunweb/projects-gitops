@@ -11,8 +11,8 @@ spec:
     serviceAccountName: {{ $.Values.project }}-ci-workflow-sa
   dependencies:
     - name: github-dep
-      eventSourceName: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
-      eventName: {{ $.Values.project }}-{{ $app.name }}-github-trigger
+      eventSourceName: {{ $app.name }}-gh-webhook
+      eventName: {{ $app.name }}-trigger
       filters:
         data:
           - path: body.ref

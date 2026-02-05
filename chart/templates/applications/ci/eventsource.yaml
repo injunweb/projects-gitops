@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: EventSource
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-github-eventsource
+  name: {{ $app.name }}-gh-webhook
   namespace: {{ $.Values.project }}
 spec:
   eventBusName: {{ $.Values.project }}-ci-eventbus
@@ -15,7 +15,7 @@ spec:
         targetPort: 12000
         name: webhook
   github:
-    {{ $.Values.project }}-{{ $app.name }}-github-trigger:
+    {{ $app.name }}-trigger:
       repositories:
         - owner: {{ $app.git.owner }}
           names:
