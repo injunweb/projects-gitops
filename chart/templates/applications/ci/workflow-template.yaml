@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: WorkflowTemplate
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
+  name: {{ $app.name }}-build-wf
   namespace: {{ $.Values.project }}
 spec:
   serviceAccountName: {{ $.Values.project }}-ci-workflow-sa

@@ -3,7 +3,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Sensor
 metadata:
-  name: {{ $.Values.project }}-{{ $app.name }}-github-workflow-sensor
+  name: {{ $app.name }}-gh-sensor
   namespace: {{ $.Values.project }}
 spec:
   eventBusName: {{ $.Values.project }}-ci-eventbus
@@ -45,7 +45,7 @@ spec:
                     - name: github-sha
                       value: ""
                 workflowTemplateRef:
-                  name: {{ $.Values.project }}-{{ $app.name }}-build-workflow-template
+                  name: {{ $app.name }}-build-wf
           parameters:
             - src:
                 dependencyName: github-dep
