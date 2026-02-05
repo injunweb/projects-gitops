@@ -5,7 +5,7 @@ applications:
       owner: in-jun
       repo: github-profile-guestbook
       branch: main
-      hash: 6d0bb2797eb3faff5edca437636841a75c3bd067
+      hash: 5e6f43d89ca8c3c458d13b9811a4d3bc29999073
     endpoints:
       - port: 8080
         routes:
