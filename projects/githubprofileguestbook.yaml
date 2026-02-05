@@ -3,13 +3,12 @@ applications:
     git:
       type: github
       owner: in-jun
-      repo: github-profile-comments
+      repo: github-profile-guestbook
       branch: main
-      hash: c966165cf59010c74cac6d03157e2a2e69a0f901
     endpoints:
       - port: 8080
         routes:
-          - github-comment.injun.dev
+          - github-profile-guestbook.injun.dev
 addons:
   - name: db
     type: postgres
